@@ -1,4 +1,5 @@
-package org.linus.du.ui.theme
+package org.linus.core.ui.theme
+
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
@@ -6,7 +7,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import org.linus.du.R
+import org.linus.core.R
 
 private val AppleFonts = FontFamily(
     Font(R.font.apple_light, FontWeight.W300),
@@ -80,21 +81,3 @@ val AppTypography = Typography(
         fontSize = 12.sp
     )
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
