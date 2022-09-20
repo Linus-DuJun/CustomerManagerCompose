@@ -40,7 +40,7 @@ fun CustomerManagerComposeTheme(
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = AppTypography,
         shapes = Shapes,
         content = content
     )

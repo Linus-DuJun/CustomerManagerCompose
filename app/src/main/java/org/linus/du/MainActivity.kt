@@ -3,7 +3,9 @@ package org.linus.du
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -31,7 +33,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+    Column {
+        Text(text = "Hello $name!")
+        Button(onClick = { /*TODO*/ }) {
+            Text(text = "Click me")
+        }
+    }
+    
 }
 
 @Preview(showBackground = true)
