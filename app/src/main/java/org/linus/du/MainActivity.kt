@@ -12,12 +12,13 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import org.linus.core.ui.theme.AppTypography
 import org.linus.core.ui.theme.DarkColorPalette
 import org.linus.core.ui.theme.LightColorPalette
 import org.linus.core.ui.theme.Shapes
-
 
 @Composable
 fun CustomerManagerComposeTheme(
