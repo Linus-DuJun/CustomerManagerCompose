@@ -14,6 +14,16 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        // room schema config.
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation":"$projectDir/schemas".toString(),
+                        "room.incremental":"true",
+                        "room.expandProjection":"true"]
+            }
+        }
     }
 
     buildTypes {
@@ -42,9 +52,12 @@ dependencies {
 
     //ROOM
     implementation "androidx.room:room-runtime:2.4.3"
-    implementation "androidx.room:room-paging:2.5.0-alpha03"
-    annotationProcessor "androidx.room:room-compiler:2.4.3"
+    implementation "androidx.room:room-ktx:2.4.3"
+    implementation "androidx.room:room-paging:2.4.3"
     kapt "androidx.room:room-compiler:2.4.3"
+
+    // Paging 3.0
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

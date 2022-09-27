@@ -1,4 +1,4 @@
-package org.linus.du
+package org.linus.du.feature.customer.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,7 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 import org.linus.core.ui.theme.*
+import org.linus.core.utils.toast.Toaster
+import javax.inject.Inject
 
 @Composable
 fun CustomerManagerComposeTheme(
@@ -38,7 +41,11 @@ fun CustomerManagerComposeTheme(
     )
 }
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var toaster: Toaster
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -62,23 +69,25 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String) {
-    Column {
-        Text(text = "Hello $name!")
-        Button(onClick = { /*TODO*/ }) {
-            Text(text = "Click me")
+
+    @Composable
+    fun Greeting(name: String) {
+        Column {
+            Text(text = "Hello $name!")
+            Button(onClick = { toaster.showToast("hilt injection clicked") }) {
+                Text(text = "Click me")
+            }
         }
+
     }
-    
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CustomerManagerComposeTheme {
-        Greeting("Android")
-    }
-}
+
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    CustomerManagerComposeTheme {
+//        Greeting("Android")
+//    }
+//}
