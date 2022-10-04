@@ -51,26 +51,30 @@ android {
 
 dependencies {
     implementation project(":core")
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-    implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation 'androidx.activity:activity-compose:1.6.0'
     implementation "androidx.compose.ui:ui:$compose_ui_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
     implementation 'androidx.compose.material:material:1.2.1'
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.25.1"
+    implementation "com.google.accompanist:accompanist-navigation-material:0.25.1"
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.25.1"
+    implementation "com.google.accompanist:accompanist-insets-ui:0.25.1"
+    implementation "com.google.accompanist:accompanist-navigation-material:0.25.1"
     // Navigation
     implementation "androidx.navigation:navigation-compose:2.5.2"
     // Hilt
-    implementation "com.google.dagger:hilt-android:2.43"
+    implementation "com.google.dagger:hilt-android:2.43.2"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
-    kapt "com.google.dagger:hilt-compiler:2.43"
+    kapt "com.google.dagger:hilt-compiler:2.43.2"
     //ROOM
     implementation "androidx.room:room-runtime:2.4.3"
     implementation "androidx.room:room-paging:2.4.3"
     annotationProcessor "androidx.room:room-compiler:2.4.3"
     kapt "androidx.room:room-compiler:2.4.3"
     // Paging 3.0
-    implementation 'androidx.paging:paging-compose:1.0.0-alpha15'
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha16'
 
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha02"

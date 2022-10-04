@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Subject(
+data class ReturnVisit(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    val userId: Int,
-    val subject: String,
-    val description: String,
+    val subjectId: Int,
     val timeStamp: Long,
+    val title: String,
+    val description: String
 )

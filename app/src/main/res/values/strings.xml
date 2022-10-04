@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MemoryYao</string>
+    <string name="return_visit_title">回访</string>
+    <string name="super_vip">超优</string>
+    <string name="normal_vip">一般</string>
+    <string name="bad_customer">客诉</string>
 </resources>

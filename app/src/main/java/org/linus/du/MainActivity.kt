@@ -1,4 +1,4 @@
-package org.linus.du.feature.customer.ui
+package org.linus.du
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -58,36 +58,15 @@ class MainActivity : ComponentActivity() {
                     systemUiController.setStatusBarColor(color = Purple500, darkIcons = true)
                 }
             }
+
             CustomerManagerComposeTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
-                }
+              HomeScreen(
+                  onAddCustomer = {
+                      toaster.showToast("hilt injection clicked")
+                  }
+              )
             }
         }
-    }
-
-
-    @Composable
-    fun Greeting(name: String) {
-        Column {
-            Text(text = "Hello $name!")
-            Button(onClick = { toaster.showToast("hilt injection clicked") }) {
-                Text(text = "Click me")
-            }
-        }
-
     }
 }
 
-
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//    CustomerManagerComposeTheme {
-//        Greeting("Android")
-//    }
-//}
