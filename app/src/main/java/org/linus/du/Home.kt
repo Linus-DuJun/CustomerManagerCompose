@@ -19,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -30,16 +29,13 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 
-@OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class,
-    ExperimentalMaterialApi::class
-)
+@OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreen(
     onAddCustomer: () -> Unit
 ) {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberAnimatedNavController(bottomSheetNavigator)
-    val configuration = LocalConfiguration.current
     Scaffold(
         bottomBar = {
             val currentSelectedItem by navController.currentScreenAsState()
@@ -55,6 +51,9 @@ fun HomeScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth())
+        },
+        drawerContent = {
+            Text("test")
         }
     ) {
         Row(modifier = Modifier.fillMaxSize()) {

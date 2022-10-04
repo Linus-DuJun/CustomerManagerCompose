@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val systemUiController = rememberSystemUiController()
             val isDarkMode = isSystemInDarkTheme()
@@ -55,7 +56,7 @@ class MainActivity : ComponentActivity() {
                 if (isDarkMode) {
                     systemUiController.setStatusBarColor(color = Color.Transparent)
                 } else {
-                    systemUiController.setStatusBarColor(color = Purple500, darkIcons = true)
+                    systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = true)
                 }
             }
 
