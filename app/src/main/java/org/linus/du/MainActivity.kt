@@ -44,7 +44,6 @@ fun CustomerManagerComposeTheme(
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var toaster: Toaster
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +60,7 @@ class MainActivity : ComponentActivity() {
             }
 
             CustomerManagerComposeTheme {
-              HomeScreen(
-                  onAddCustomer = {
-                      toaster.showToast("hilt injection clicked")
-                  }
-              )
+              HomeScreen()
             }
         }
     }

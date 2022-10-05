@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="icon_desc_refreshing">刷新</string>
+    <string name="icon_desc_add_customer">添加客户</string>
+</resources>
