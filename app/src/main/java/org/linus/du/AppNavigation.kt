@@ -1,6 +1,5 @@
 package org.linus.du
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,6 +8,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import org.linus.du.feature.customer.ui.*
+import org.linus.du.feature.customer.ui.add_customer.AddCustomerScreen
 
 internal sealed class Screen(val route: String) {
     object ReturnVisitScreen: Screen("return_visit")
@@ -40,6 +40,7 @@ private sealed class LeafScreen(
 @Composable
 internal fun AppNavigation(
     navController: NavHostController,
+    onAddCustomer: () -> Unit,
     modifier: Modifier
 ) {
     AnimatedNavHost(
@@ -51,59 +52,62 @@ internal fun AppNavigation(
         popExitTransition = { defaultPopExitTransition() },
         modifier = modifier
     ) {
-        addReturnVisitTopLevel(navController)
-        addSuperVipTopLevel(navController)
-        addNormalVipTopLevel(navController)
-        addBadCustomerTopLevel(navController)
+        addReturnVisitTopLevel(navController, onAddCustomer)
+        addSuperVipTopLevel(navController, onAddCustomer)
+        addNormalVipTopLevel(navController, onAddCustomer)
+        addBadCustomerTopLevel(navController, onAddCustomer)
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addBadCustomerTopLevel(
     navController: NavController,
+    onAddCustomer: () -> Unit
 ) {
     navigation(
         route = Screen.BadCustomer.route,
         startDestination =  LeafScreen.BadCustomer.createRoute(Screen.BadCustomer)
     ) {
-        addBadCustomerScreen(navController, Screen.BadCustomer)
+        addBadCustomerScreen(navController, Screen.BadCustomer, onAddCustomer = onAddCustomer)
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addNormalVipTopLevel(
     navController: NavController,
+    onAddCustomer: () -> Unit
 ) {
     navigation(
         route = Screen.NormalVip.route,
         startDestination = LeafScreen.NormalVip.createRoute(Screen.NormalVip)
     ) {
-        addNormalVipScreen(navController, Screen.NormalVip)
+        addNormalVipScreen(navController, Screen.NormalVip, onAddCustomer)
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addSuperVipTopLevel(
     navController: NavController,
+    onAddCustomer: () -> Unit
 ) {
     navigation(
         route = Screen.SuperVip.route,
         startDestination = LeafScreen.SuperVip.createRoute(Screen.SuperVip)
     ) {
-        addSuperVipScreen(navController, Screen.SuperVip)
+        addSuperVipScreen(navController, root = Screen.SuperVip, onAddCustomer = onAddCustomer)
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addReturnVisitTopLevel(
-    navController: NavController
+    navController: NavController,
+    onAddCustomer: () -> Unit
 ) {
     navigation(
         route = Screen.ReturnVisitScreen.route,
         startDestination = LeafScreen.ReturnVisit.createRoute(Screen.ReturnVisitScreen)
     ) {
-        addReturnVisitScreen(navController, Screen.ReturnVisitScreen)
-        addCustomerScreen(Screen.ReturnVisitScreen)
+        addReturnVisitScreen(navController, Screen.ReturnVisitScreen, onAddCustomer)
     }
 }
 
@@ -111,14 +115,15 @@ private fun NavGraphBuilder.addReturnVisitTopLevel(
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addReturnVisitScreen(
     navController: NavController,
-    root: Screen
+    root: Screen,
+    onAddCustomer: () -> Unit
 ) {
     composable(
         route = LeafScreen.ReturnVisit.createRoute(root),
     ) {
        ReturnVisitScreen(
-           onAddCustomer = { navController.navigate(LeafScreen.AddCustomer.createRoute(root))},
-           refresh = { "refreshing" }
+           refresh = { "refreshing" },
+           onAddCustomer = onAddCustomer
        )
     }
 }
@@ -126,36 +131,48 @@ private fun NavGraphBuilder.addReturnVisitScreen(
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addSuperVipScreen(
     navController: NavController,
+    onAddCustomer: () -> Unit,
     root: Screen
 ) {
     composable(
         route = LeafScreen.SuperVip.createRoute(root)
     ) {
-        SuperVipScreen()
+        SuperVipScreen(
+            refresh = { "refreshing" },
+            onAddCustomer = onAddCustomer
+        )
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addNormalVipScreen(
     navController: NavController,
-    root: Screen
+    root: Screen,
+    onAddCustomer: () -> Unit
 ) {
     composable(
         route = LeafScreen.NormalVip.createRoute(root)
     ) {
-        NormalVipScreen()
+        NormalVipScreen(
+            refresh = { "refreshing" },
+            onAddCustomer = onAddCustomer
+        )
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addBadCustomerScreen(
     navController: NavController,
-    root: Screen
+    root: Screen,
+    onAddCustomer: () -> Unit
 ) {
     composable(
         route = LeafScreen.BadCustomer.createRoute(root)
     ) {
-        BadCustomerScreen()
+        BadCustomerScreen(
+            refresh = { "refreshing" },
+            onAddCustomer = onAddCustomer
+        )
     }
 }
 

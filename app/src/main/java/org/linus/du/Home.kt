@@ -31,7 +31,9 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onAddCustomer: () -> Unit
+) {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberAnimatedNavController(bottomSheetNavigator)
     Scaffold(
@@ -58,6 +60,7 @@ fun HomeScreen() {
             com.google.accompanist.navigation.material.ModalBottomSheetLayout(bottomSheetNavigator) {
                 AppNavigation(
                     navController = navController,
+                    onAddCustomer = onAddCustomer,
                     modifier = Modifier.weight(1f).fillMaxHeight()
                 )
             }

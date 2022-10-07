@@ -24,7 +24,7 @@ import org.linus.du.R
 @Composable
 fun ReturnVisitScreen(
     refresh: () -> Unit,
-    onAddCustomer: () -> Unit,
+    onAddCustomer: () -> Unit
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -57,7 +57,6 @@ fun ReturnVisitScreen(
                 }
             }
         }
-
     }
 }
 
