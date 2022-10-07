@@ -73,7 +73,7 @@ private fun SuperVipAppBar(
         contentColor = MaterialTheme.colors.onSurface,
         contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top).asPaddingValues(),
         modifier = modifier,
-        title = { Text(text = stringResource(id = R.string.return_visit_schedule)) },
+        title = { Text(text = stringResource(id = R.string.super_vip_title)) },
         actions = {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Crossfade(
