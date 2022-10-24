@@ -176,16 +176,18 @@ private fun NavGraphBuilder.addBadCustomerScreen(
     }
 }
 
-@ExperimentalAnimationApi
-private fun NavGraphBuilder.addCustomerScreen(
-    root: Screen
-) {
-    composable(
-        route = LeafScreen.AddCustomer.createRoute(root)
-    ) {
-        AddCustomerScreen()
-    }
-}
+//@ExperimentalAnimationApi
+//private fun NavGraphBuilder.addCustomerScreen(
+//    root: Screen
+//) {
+//    composable(
+//        route = LeafScreen.AddCustomer.createRoute(root)
+//    ) {
+//        AddCustomerScreen(
+//            viewModel =
+//        )
+//    }
+//}
 
 @ExperimentalAnimationApi
 private fun AnimatedContentScope<*>.defaultEnterTransition(

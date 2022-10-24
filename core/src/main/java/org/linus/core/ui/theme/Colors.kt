@@ -17,3 +17,7 @@ val Ocean200 = Color(0xffbbfdfd)
 
 val Red500 = Color(0xffb00020)
 val Red200 = Color(0xffcf6679)
+
+val Green = Color(0xff29CC29)
+val Gray300 = Color(0xFFC3CFE6)
+val Gray200 = Color(0xffE6EAF2)

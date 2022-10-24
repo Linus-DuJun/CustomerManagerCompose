@@ -3,13 +3,20 @@ package org.linus.du.feature.customer.ui.add_customer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 import org.linus.du.CustomerManagerComposeTheme
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AddCustomerActivity: ComponentActivity() {
+
+    @Inject
+    lateinit var viewModel: AddCustomerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +32,10 @@ class AddCustomerActivity: ComponentActivity() {
             }
 
             CustomerManagerComposeTheme {
-                AddCustomerScreen()
+                AddCustomerScreen(
+                    viewModel = viewModel,
+                    onBackClick = { finish() }
+                )
             }
         }
     }
