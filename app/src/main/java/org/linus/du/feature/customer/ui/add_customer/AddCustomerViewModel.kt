@@ -4,14 +4,14 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.linus.core.utils.toast.Toaster
 import org.linus.du.feature.customer.domain.repository.CustomerRepository
 import javax.inject.Inject
 
-
 @HiltViewModel
-class AddCustomerViewModel
-@Inject constructor(
-    private val customerRepository: CustomerRepository
+class AddCustomerViewModel @Inject constructor(
+    private val customerRepository: CustomerRepository,
+    private val toaster: Toaster
 ) : ViewModel() {
     private val _screenState = MutableStateFlow(AddCustomerScreenStateHolder())
     val screenState = _screenState.asStateFlow()
@@ -44,6 +44,6 @@ class AddCustomerViewModel
     }
 
     private fun saveCustomer() {
-
+        toaster.showToast("save")
     }
 }

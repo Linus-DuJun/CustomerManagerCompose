@@ -13,7 +13,9 @@ import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import org.linus.core.ui.theme.*
+import org.linus.core.utils.toast.Toaster
 import org.linus.du.feature.customer.ui.add_customer.AddCustomerActivity
+import javax.inject.Inject
 
 @Composable
 fun CustomerManagerComposeTheme(
@@ -37,6 +39,8 @@ fun CustomerManagerComposeTheme(
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var toaster: Toaster
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +59,7 @@ class MainActivity : ComponentActivity() {
             CustomerManagerComposeTheme {
               HomeScreen(
                   onAddCustomer = {
+                      toaster.showToast("test show toaster")
                       startActivity(Intent(this@MainActivity, AddCustomerActivity::class.java))
                   }
               )

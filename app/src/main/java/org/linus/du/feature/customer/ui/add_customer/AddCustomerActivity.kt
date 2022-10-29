@@ -10,13 +10,11 @@ import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import org.linus.du.CustomerManagerComposeTheme
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddCustomerActivity: ComponentActivity() {
 
-    @Inject
-    lateinit var viewModel: AddCustomerViewModel
+    val viewModel: AddCustomerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
