@@ -8,4 +8,5 @@
     <string name="super_vip_title">超V客户</string>
     <string name="normal_vip_title">Vip客户</string>
     <string name="bad_customer_title">客诉客户</string>
+    <string name="vip_level">客户分级</string>
 </resources>

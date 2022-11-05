@@ -1,7 +1,8 @@
 package org.linus.du.feature.customer.ui.add_customer
 
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -10,14 +11,20 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 
 import org.linus.core.ui.common.BaseTopAppBar
 import org.linus.core.ui.theme.Gray200
 import org.linus.core.ui.theme.Gray300
-import org.linus.core.ui.theme.Green
 import org.linus.core.ui.theme.Red500
+import org.linus.du.R
 
 @Composable
 fun AddCustomerScreen(
@@ -41,9 +48,6 @@ fun AddCustomerScreen(
                 onBackClick = onBackClick,
                 onSaveClick = { viewModel.obtainEvent(AddCustomerScreenEvent.SaveEvent) }
             )
-            AnimatedVisibility(visible = viewModel.screenState.value.isLoading) {
-                LoadingView()
-            }
         }
     }
 }
@@ -52,6 +56,7 @@ fun AddCustomerScreen(
 private fun ContentView(
     viewModel: AddCustomerViewModel,
     state: State<AddCustomerScreenStateHolder>,
+
     onSaveClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -68,20 +73,97 @@ private fun ContentView(
                 isError = state.value.noNameError,
                 onValueChanged = { viewModel.obtainEvent(AddCustomerScreenEvent.NameInputEvent(it)) }
             )
+            Spacer(modifier = Modifier.height(16.dp))
             PhoneView(
                 phone = state.value.phone,
                 isError = state.value.noPhoneError,
                 onValueChanged = { viewModel.obtainEvent(AddCustomerScreenEvent.PhoneInputEvent(it)) }
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            VipLevelView(
+                screenState = state,
+                onVipLevelSelected = { viewModel.obtainEvent(AddCustomerScreenEvent.VipLevelSelectedEvent(it))}
+            )
 
         }
-
         Spacer(modifier = Modifier.height(16.dp))
         Row(modifier = Modifier.height(68.dp)) {
             BottomButtonsView(
                 onCancelClick = onBackClick,
                 onSaveClick = onSaveClick
             )
+        }
+    }
+}
+
+@Composable
+private fun VipLevelView(
+    screenState: State<AddCustomerScreenStateHolder>,
+    onVipLevelSelected: (String) -> Unit
+) {
+    val vipLevelState = rememberLevelStateHolder()
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Box {
+            VipLevelOutlinedTextField(state = vipLevelState, isError = screenState.value.noPhoneError)
+            VipLevelDropdownMenuView(state = vipLevelState, onLevelSelected = onVipLevelSelected)
+        }
+    }
+}
+
+@Composable
+private fun VipLevelOutlinedTextField(
+    state: VipLevelStateHolder,
+    isError: Boolean
+) {
+    OutlinedTextField(
+        modifier = Modifier
+            .focusable(false)
+            .clickable { state.onOpened(true) }
+            .fillMaxWidth()
+            .onFocusChanged { if (it.isFocused) state.onOpened(true) }
+            .onGloballyPositioned { state.onSize(it.size.toSize()) },
+        value = state.selectedLevel,
+        onValueChange = {},
+        isError = isError,
+        label = { Text(stringResource(id = R.string.vip_level)) },
+        trailingIcon = {
+            Icon(
+                painter = painterResource(id = state.icon),
+                contentDescription = null,
+                modifier = Modifier.clickable { state.onOpened(!state.opened) }
+            )
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = MaterialTheme.colors.primary,
+            focusedLabelColor = MaterialTheme.colors.primary,
+            cursorColor = MaterialTheme.colors.primary,
+            errorBorderColor = Red500,
+            errorCursorColor = Red500,
+            errorLabelColor = Red500
+        )
+    )
+}
+
+@Composable
+private fun VipLevelDropdownMenuView(
+    state: VipLevelStateHolder,
+    onLevelSelected: (String) -> Unit
+) {
+    DropdownMenu(
+        modifier = Modifier.width( with(LocalDensity.current) { state.size.width.toDp()} ),
+        expanded = state.opened,
+        onDismissRequest = { state.onOpened(false) }
+    ) {
+        state.levels.forEachIndexed { index, level ->
+            DropdownMenuItem(onClick = {
+                state.onSelectedIndex(index)
+                state.onOpened(false)
+                onLevelSelected(level)
+            }) {
+                Text(level)
+            }
         }
     }
 }
@@ -135,18 +217,6 @@ private fun PhoneView(
     )
 }
 
-
-@Composable
-private fun LoadingView() {
-    Column(modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        CircularProgressIndicator(modifier = Modifier.size(48.dp),
-            color = Green
-        )
-    }
-}
 
 @Composable
 private fun BottomButtonsView(
