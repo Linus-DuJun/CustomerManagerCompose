@@ -84,6 +84,11 @@ private fun ContentView(
                 screenState = state,
                 onVipLevelSelected = { viewModel.obtainEvent(AddCustomerScreenEvent.VipLevelSelectedEvent(it))}
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            RecordView(
+                screenState = state,
+                onRecordInput = { viewModel.obtainEvent(AddCustomerScreenEvent.RecordInputEvent(it)) }
+            )
 
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -95,6 +100,90 @@ private fun ContentView(
         }
     }
 }
+
+/**
+ * 门诊记录UI
+ */
+@Composable
+private fun RecordView(
+    screenState: State<AddCustomerScreenStateHolder>,
+    onRecordInput: (String) -> Unit
+) {
+    val vipRecordState = rememberRecordsState()
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Box {
+            RecordOutlinedTextField(
+                record = screenState.value.record,
+                state = vipRecordState,
+                onRecordInput = onRecordInput,
+                isError = screenState.value.noRecordError)
+            RecordDropdownMenuView(state = vipRecordState, onLevelSelected = onRecordInput)
+        }
+    }
+}
+
+@Composable
+private fun RecordDropdownMenuView(
+    state: VipRecordStateHolder,
+    onLevelSelected: (String) -> Unit
+) {
+    DropdownMenu(
+        modifier = Modifier.width( with(LocalDensity.current) { state.size.width.toDp()} ),
+        expanded = state.opened,
+        onDismissRequest = { state.onOpened(false) }
+    ) {
+        state.records.forEachIndexed { index, record ->
+            DropdownMenuItem(onClick = {
+                state.onSelectedIndex(index)
+                state.onOpened(false)
+                onLevelSelected(record)
+            }) {
+                Text(record)
+            }
+        }
+    }
+}
+
+
+
+@Composable
+private fun RecordOutlinedTextField(
+    record: String,
+    state: VipRecordStateHolder,
+    onRecordInput: (String) -> Unit,
+    isError: Boolean
+) {
+    OutlinedTextField(
+        modifier = Modifier
+            .focusable(true)
+            .clickable { state.onOpened(true) }
+            .fillMaxWidth()
+            .onFocusChanged { if (it.isFocused) state.onOpened(true) }
+            .onGloballyPositioned { state.onSize(it.size.toSize()) },
+        value = record,
+        onValueChange = onRecordInput,
+        isError = isError,
+        label = { Text(stringResource(id = R.string.record_items)) },
+        trailingIcon = {
+            Icon(
+                painter = painterResource(id = state.icon),
+                contentDescription = null,
+                modifier = Modifier.clickable { state.onOpened(!state.opened) }
+            )
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = MaterialTheme.colors.primary,
+            focusedLabelColor = MaterialTheme.colors.primary,
+            cursorColor = MaterialTheme.colors.primary,
+            errorBorderColor = Red500,
+            errorCursorColor = Red500,
+            errorLabelColor = Red500
+        )
+    )
+}
+
 
 @Composable
 private fun VipLevelView(

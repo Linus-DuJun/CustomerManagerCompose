@@ -5,6 +5,8 @@ sealed class AddCustomerScreenEvent {
     object NoNameErrorEvent: AddCustomerScreenEvent()
     object NoPhoneErrorEvent: AddCustomerScreenEvent()
     object NoLevelErrorEvent: AddCustomerScreenEvent()
+    object NoRecordErrorEvent: AddCustomerScreenEvent()
+    data class RecordInputEvent(val record: String): AddCustomerScreenEvent()
     data class RecordSelectedEvent(val record: String): AddCustomerScreenEvent()
     data class VipLevelSelectedEvent(val level: String): AddCustomerScreenEvent()
     data class NameInputEvent(val name: String): AddCustomerScreenEvent()

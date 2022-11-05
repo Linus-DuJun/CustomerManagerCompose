@@ -9,4 +9,5 @@
     <string name="normal_vip_title">Vip客户</string>
     <string name="bad_customer_title">客诉客户</string>
     <string name="vip_level">客户分级</string>
+    <string name="record_items">诊疗项目</string>
 </resources>

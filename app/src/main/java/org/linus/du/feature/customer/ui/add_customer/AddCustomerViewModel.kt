@@ -30,7 +30,9 @@ class AddCustomerViewModel @Inject constructor(
             is AddCustomerScreenEvent.VipLevelSelectedEvent ->
                 _screenState.value = currentState.copy(level = event.level, noLevelError = false)
             is AddCustomerScreenEvent.RecordSelectedEvent ->
-                _screenState.value = currentState.copy(record = event.record)
+                _screenState.value = currentState.copy(record = event.record, noRecordError = false)
+            is AddCustomerScreenEvent.RecordInputEvent ->
+                _screenState.value = currentState.copy(record = event.record, noRecordError = false)
             is AddCustomerScreenEvent.RecordDescInputEvent ->
                 _screenState.value = currentState.copy(recordDescription = event.desc)
             is AddCustomerScreenEvent.NoNameErrorEvent ->
@@ -39,11 +41,13 @@ class AddCustomerViewModel @Inject constructor(
                 _screenState.value = currentState.copy(noPhoneError = true)
             is AddCustomerScreenEvent.NoLevelErrorEvent ->
                 _screenState.value = currentState.copy(noLevelError = true)
+            is AddCustomerScreenEvent.NoRecordErrorEvent ->
+                _screenState.value = currentState.copy(noRecordError = true)
             is AddCustomerScreenEvent.SaveEvent -> saveCustomer()
         }
     }
 
     private fun saveCustomer() {
-        toaster.showToast("${screenState.value.name}, ${screenState.value.phone}, ${screenState.value.level}")
+        toaster.showToast("${screenState.value.name}, ${screenState.value.phone}, ${screenState.value.level}, ${screenState.value.record}")
     }
 }

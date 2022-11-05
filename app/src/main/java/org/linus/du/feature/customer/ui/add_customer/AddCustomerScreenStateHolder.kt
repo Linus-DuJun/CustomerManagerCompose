@@ -11,5 +11,6 @@ data class AddCustomerScreenStateHolder (
     val recordDescription: String = String.empty(),
     val noNameError: Boolean = false,
     val noPhoneError: Boolean = false,
-    val noLevelError: Boolean = false
+    val noLevelError: Boolean = false,
+    val noRecordError: Boolean = false
 )
