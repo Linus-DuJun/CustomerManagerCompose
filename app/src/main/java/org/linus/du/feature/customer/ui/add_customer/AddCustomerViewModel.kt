@@ -50,6 +50,7 @@ class AddCustomerViewModel @Inject constructor(
                 _screenState.value = currentState.copy(showAddReturnVisitDialog = false)
             is AddCustomerScreenEvent.OnReturnVisitTitleInputEvent -> {
                 val returnVisit = ReturnVisit(
+                    id = _screenState.value.currentAddingReturnVisit.id,
                     title = event.title,
                     timeStamp = _screenState.value.currentAddingReturnVisit.timeStamp,
                     humanReadableTime = _screenState.value.currentAddingReturnVisit.humanReadableTime
@@ -70,6 +71,7 @@ class AddCustomerViewModel @Inject constructor(
                 _screenState.value = currentState.copy(showAddReturnVisitDialog = false, showDatePickerDialog = true)
             is AddCustomerScreenEvent.OnReturnVisitDateConfirmedEvent -> {
                 val returnVisit = ReturnVisit(
+                    id = _screenState.value.currentAddingReturnVisit.id,
                     title = _screenState.value.currentAddingReturnVisit.title,
                     timeStamp = event.time,
                     humanReadableTime = event.humanReadableTime
@@ -81,7 +83,7 @@ class AddCustomerViewModel @Inject constructor(
                 )
             }
             is AddCustomerScreenEvent.RemoveReturnVisitItemEvent -> {
-                val deletedItem = _screenState.value.returnVisitItems.first { it.title == event.returnVisit.title }
+                val deletedItem = _screenState.value.returnVisitItems.first { it.id == event.returnVisit.id }
                 _screenState.value.returnVisitItems.minus(deletedItem).also {
                     _screenState.value = currentState.copy(returnVisitItems = it)
                 }

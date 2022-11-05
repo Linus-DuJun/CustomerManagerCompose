@@ -500,7 +500,7 @@ private fun ReturnVisitListView(
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(0.dp, 170.dp)
+            .heightIn(0.dp, 200.dp)
     ) {
         items(returnVisitItems) { item: ReturnVisit ->
               ReturnVisitItemView(item, onRemoveReturnVisit)
