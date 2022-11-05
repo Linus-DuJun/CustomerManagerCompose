@@ -7,8 +7,14 @@ import android.widget.DatePicker
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,10 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 
 import org.linus.core.ui.common.BaseTopAppBar
-import org.linus.core.ui.theme.Gray200
-import org.linus.core.ui.theme.Gray300
-import org.linus.core.ui.theme.Ocean300
-import org.linus.core.ui.theme.Red500
+import org.linus.core.ui.theme.*
 import org.linus.core.utils.extension.dateFor
 import org.linus.du.R
 import java.time.LocalDate
@@ -75,7 +78,6 @@ fun AddCustomerScreen(
                             viewModel.obtainEvent(it)
                         }
                     },
-                    onCancel = { }
                 )
             }
         }
@@ -123,6 +125,15 @@ private fun ContentView(
             AddReturnVisitButtonView(
                 onAddReturnVisit = {viewModel.obtainEvent(AddCustomerScreenEvent.OnAddReturnVisitButtonClickedEvent)}
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            if (state.value.returnVisitItems.isNotEmpty()) {
+                ReturnVisitListView(
+                    returnVisitItems = state.value.returnVisitItems,
+                    onRemoveReturnVisit = {
+                        viewModel.obtainEvent(AddCustomerScreenEvent.RemoveReturnVisitItemEvent(it))
+                    }
+                )
+            }
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(modifier = Modifier.height(68.dp)) {
@@ -369,7 +380,6 @@ private fun PhoneView(
 @Composable
 private fun DatePickerView(
     onDateConfirmed: (Long, String) -> Unit,
-    onCancel: () -> Unit
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -480,6 +490,66 @@ private fun ReturnVisitAddingView(
             }
         }
     )
+}
+
+@Composable
+private fun ReturnVisitListView(
+    returnVisitItems: List<ReturnVisit>,
+    onRemoveReturnVisit: (ReturnVisit) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(0.dp, 170.dp)
+    ) {
+        items(returnVisitItems) { item: ReturnVisit ->
+              ReturnVisitItemView(item, onRemoveReturnVisit)
+        }
+    }
+}
+
+@Composable
+private fun ReturnVisitItemView(
+    item: ReturnVisit,
+    onRemoveReturnVisit: (ReturnVisit) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_bookmark),
+            contentDescription = null,
+            tint = Green,
+            modifier = Modifier.size(width = 24.dp, height = 24.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(item.title, style = MaterialTheme.typography.body1)
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(item.humanReadableTime, style = MaterialTheme.typography.body2)
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        IconButton(
+            onClick = { onRemoveReturnVisit.invoke(item) }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_remove),
+                tint = Red500,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
 }
 
 

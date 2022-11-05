@@ -5,6 +5,7 @@ import org.linus.core.utils.extension.empty
 
 @Stable
 data class ReturnVisit(
+    val id: Long = System.currentTimeMillis(),
     val title: String = String.empty(),
     val timeStamp: Long = 0L,
     val humanReadableTime: String = String.empty()

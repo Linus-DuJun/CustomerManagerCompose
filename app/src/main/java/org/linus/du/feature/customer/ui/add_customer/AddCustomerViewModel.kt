@@ -80,6 +80,12 @@ class AddCustomerViewModel @Inject constructor(
                     showDatePickerDialog = false
                 )
             }
+            is AddCustomerScreenEvent.RemoveReturnVisitItemEvent -> {
+                val deletedItem = _screenState.value.returnVisitItems.first { it.title == event.returnVisit.title }
+                _screenState.value.returnVisitItems.minus(deletedItem).also {
+                    _screenState.value = currentState.copy(returnVisitItems = it)
+                }
+            }
             is AddCustomerScreenEvent.SaveEvent -> saveCustomer()
         }
     }

@@ -9,6 +9,7 @@ sealed class AddCustomerScreenEvent {
     object OnAddReturnVisitButtonClickedEvent: AddCustomerScreenEvent()
     object OnAddReturnVisitCancelEvent: AddCustomerScreenEvent()
     object OnSelectDateEvent: AddCustomerScreenEvent()
+    data class RemoveReturnVisitItemEvent(val returnVisit: ReturnVisit) : AddCustomerScreenEvent()
     data class OnReturnVisitDateConfirmedEvent(val time: Long, val humanReadableTime: String): AddCustomerScreenEvent()
     data class OnAddReturnVisitConfirmEvent(val returnVisit: ReturnVisit): AddCustomerScreenEvent()
     data class OnReturnVisitTitleInputEvent(val title: String): AddCustomerScreenEvent()
