@@ -1,5 +1,6 @@
 package org.linus.du.feature.customer.ui.add_customer
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,11 +44,47 @@ class AddCustomerViewModel @Inject constructor(
                 _screenState.value = currentState.copy(noLevelError = true)
             is AddCustomerScreenEvent.NoRecordErrorEvent ->
                 _screenState.value = currentState.copy(noRecordError = true)
+            is AddCustomerScreenEvent.OnAddReturnVisitButtonClickedEvent ->
+                _screenState.value = currentState.copy(showAddReturnVisitDialog = true)
+            is AddCustomerScreenEvent.OnAddReturnVisitCancelEvent ->
+                _screenState.value = currentState.copy(showAddReturnVisitDialog = false)
+            is AddCustomerScreenEvent.OnReturnVisitTitleInputEvent -> {
+                val returnVisit = ReturnVisit(
+                    title = event.title,
+                    timeStamp = _screenState.value.currentAddingReturnVisit.timeStamp,
+                    humanReadableTime = _screenState.value.currentAddingReturnVisit.humanReadableTime
+                )
+                _screenState.value = currentState.copy(currentAddingReturnVisit = returnVisit, showAddReturnVisitDialog = true)
+            }
+            is AddCustomerScreenEvent.OnAddReturnVisitConfirmEvent -> {
+                val newReturnVisitList = mutableListOf<ReturnVisit>()
+                newReturnVisitList.addAll(_screenState.value.returnVisitItems)
+                newReturnVisitList.add(event.returnVisit)
+                _screenState.value = currentState.copy(
+                    returnVisitItems = newReturnVisitList.toList(),
+                    currentAddingReturnVisit = ReturnVisit(),
+                    showAddReturnVisitDialog = false
+                )
+            }
+            is AddCustomerScreenEvent.OnSelectDateEvent ->
+                _screenState.value = currentState.copy(showAddReturnVisitDialog = false, showDatePickerDialog = true)
+            is AddCustomerScreenEvent.OnReturnVisitDateConfirmedEvent -> {
+                val returnVisit = ReturnVisit(
+                    title = _screenState.value.currentAddingReturnVisit.title,
+                    timeStamp = event.time,
+                    humanReadableTime = event.humanReadableTime
+                )
+                _screenState.value = currentState.copy(
+                    currentAddingReturnVisit = returnVisit,
+                    showAddReturnVisitDialog = true,
+                    showDatePickerDialog = false
+                )
+            }
             is AddCustomerScreenEvent.SaveEvent -> saveCustomer()
         }
     }
 
     private fun saveCustomer() {
-        toaster.showToast("${screenState.value.name}, ${screenState.value.phone}, ${screenState.value.level}, ${screenState.value.record}")
+
     }
 }

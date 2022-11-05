@@ -1,18 +1,15 @@
 package org.linus.du.feature.customer.ui.add_customer
 
-
-import android.app.Activity
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.app.DatePickerDialog
+import android.icu.util.Calendar
+import android.util.Log
+import android.widget.DatePicker
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -30,8 +27,10 @@ import org.linus.core.ui.theme.Gray200
 import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Ocean300
 import org.linus.core.ui.theme.Red500
-import org.linus.core.utils.toast.Toaster
+import org.linus.core.utils.extension.dateFor
 import org.linus.du.R
+import java.time.LocalDate
+import java.util.*
 
 @Composable
 fun AddCustomerScreen(
@@ -44,6 +43,7 @@ fun AddCustomerScreen(
             onBackClick = onBackClick
         ) }
     ) {
+        val screenState = viewModel.screenState.collectAsState()
         Box(
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp)
@@ -51,10 +51,33 @@ fun AddCustomerScreen(
         ) {
             ContentView(
                 viewModel = viewModel,
-                state = viewModel.screenState.collectAsState(),
+                state = screenState,
                 onBackClick = onBackClick,
                 onSaveClick = { viewModel.obtainEvent(AddCustomerScreenEvent.SaveEvent) }
             )
+            if (screenState.value.showAddReturnVisitDialog) {
+                ReturnVisitAddingView(
+                    screenState = screenState,
+                    onCancel = { viewModel.obtainEvent(AddCustomerScreenEvent.OnAddReturnVisitCancelEvent) },
+                    onSelectDate = { viewModel.obtainEvent(AddCustomerScreenEvent.OnSelectDateEvent)},
+                    onReturnVisitTitleChanged = {
+                        viewModel.obtainEvent(AddCustomerScreenEvent.OnReturnVisitTitleInputEvent(it))
+                    },
+                    onAddReturnVisit = {
+                        viewModel.obtainEvent(AddCustomerScreenEvent.OnAddReturnVisitConfirmEvent(screenState.value.currentAddingReturnVisit))
+                    }
+                )
+            }
+            if (screenState.value.showDatePickerDialog) {
+                DatePickerView(
+                    onDateConfirmed = { time, humanReadableTime ->
+                        AddCustomerScreenEvent.OnReturnVisitDateConfirmedEvent(time, humanReadableTime).let {
+                            viewModel.obtainEvent(it)
+                        }
+                    },
+                    onCancel = { }
+                )
+            }
         }
     }
 }
@@ -97,7 +120,9 @@ private fun ContentView(
                 onRecordInput = { viewModel.obtainEvent(AddCustomerScreenEvent.RecordInputEvent(it)) }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            AddReturnVisitButtonView()
+            AddReturnVisitButtonView(
+                onAddReturnVisit = {viewModel.obtainEvent(AddCustomerScreenEvent.OnAddReturnVisitButtonClickedEvent)}
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(modifier = Modifier.height(68.dp)) {
@@ -111,10 +136,10 @@ private fun ContentView(
 
 @Composable
 private fun AddReturnVisitButtonView(
+    onAddReturnVisit: () -> Unit
 ) {
-    val context = LocalContext.current
     Button(
-        onClick = { Toast.makeText(context, "add return visit", Toast.LENGTH_LONG).show() },
+        onClick = onAddReturnVisit,
         modifier = Modifier.size(width = 180.dp, height = 40.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Ocean300,
@@ -338,6 +363,122 @@ private fun PhoneView(
             errorLabelColor = Red500,
             errorCursorColor = Red500
         )
+    )
+}
+
+@Composable
+private fun DatePickerView(
+    onDateConfirmed: (Long, String) -> Unit,
+    onCancel: () -> Unit
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    calendar.time = Date()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    DatePickerDialog(
+        context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            val humanReadableDate = "$year 年 ${month + 1} 月 $dayOfMonth"
+            val ld = LocalDate.of(year, month + 1, dayOfMonth)
+            onDateConfirmed(dateFor(ld).time, humanReadableDate)
+        },
+        year,
+        month,
+        day
+    ).show()
+}
+
+@Composable
+private fun ReturnVisitAddingView(
+    screenState: State<AddCustomerScreenStateHolder>,
+    onCancel: () -> Unit,
+    onReturnVisitTitleChanged: (String) -> Unit,
+    onSelectDate: () -> Unit,
+    onAddReturnVisit: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onCancel,
+        title = { Spacer(modifier = Modifier.height(8.dp))},
+        text = {
+            Column {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = screenState.value.currentAddingReturnVisit.title,
+                    onValueChange = onReturnVisitTitleChanged,
+                    label = { Text("回访简述") },
+                    maxLines = 1,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Ocean300,
+                        focusedLabelColor = Ocean300,
+                        cursorColor = Ocean300,
+                        errorBorderColor = Red500,
+                        errorLabelColor = Red500,
+                        errorCursorColor = Red500
+                    )
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (screenState.value.currentAddingReturnVisit.timeStamp == 0L) {
+                        Text("点击右侧按纽选择日期")
+                    } else {
+                        Text("回访日期: ${screenState.value.currentAddingReturnVisit.humanReadableTime}")
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    IconButton(onClick = onSelectDate) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_date_picker),
+                            tint = Ocean300,
+                            contentDescription = "选择日期"
+                        )
+                    }
+                }
+            }
+        },
+        buttons = {
+            Row(
+                modifier = Modifier.padding(all = 8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                TextButton(modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 6.dp),
+                    shape = RoundedCornerShape(4.dp),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 0.dp,
+                        pressedElevation = 0.dp,
+                        disabledElevation = 0.dp,
+                        hoveredElevation = 0.dp,
+                        focusedElevation = 0.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Transparent,
+                        disabledBackgroundColor = Color.Transparent,
+                        contentColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)),
+                    onClick = onCancel) {
+                    Text(text = "算了")
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Button(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(horizontal = 6.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colors.primary,
+                        disabledBackgroundColor = Gray300,
+                        contentColor = Color.White),
+                    shape = RoundedCornerShape(4.dp),
+                    onClick = onAddReturnVisit ) {
+                    Text(text = "添加")
+                }
+            }
+        }
     )
 }
 
