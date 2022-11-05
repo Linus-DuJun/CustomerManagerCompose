@@ -390,7 +390,7 @@ private fun DatePickerView(
     DatePickerDialog(
         context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            val humanReadableDate = "$year 年 ${month + 1} 月 $dayOfMonth"
+            val humanReadableDate = "$year 年 ${month + 1} 月 $dayOfMonth 日"
             val ld = LocalDate.of(year, month + 1, dayOfMonth)
             onDateConfirmed(dateFor(ld).time, humanReadableDate)
         },

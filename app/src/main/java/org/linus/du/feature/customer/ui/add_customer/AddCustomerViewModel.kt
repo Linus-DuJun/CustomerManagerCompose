@@ -58,6 +58,18 @@ class AddCustomerViewModel @Inject constructor(
                 _screenState.value = currentState.copy(currentAddingReturnVisit = returnVisit, showAddReturnVisitDialog = true)
             }
             is AddCustomerScreenEvent.OnAddReturnVisitConfirmEvent -> {
+                if (event.returnVisit.title.trim().isNullOrEmpty()) {
+                    toaster.showToast("请输入回访简述")
+                    return
+                }
+                if (event.returnVisit.timeStamp == 0L) {
+                    toaster.showToast("请选择回访日期")
+                    return
+                }
+                if (event.returnVisit.timeStamp <= System.currentTimeMillis()) {
+                    toaster.showToast("回访日期不正确")
+                    return
+                }
                 val newReturnVisitList = mutableListOf<ReturnVisit>()
                 newReturnVisitList.addAll(_screenState.value.returnVisitItems)
                 newReturnVisitList.add(event.returnVisit)
@@ -93,6 +105,32 @@ class AddCustomerViewModel @Inject constructor(
     }
 
     private fun saveCustomer() {
-
+        if (_screenState.value.name.isEmpty()) {
+            toaster.showToast("请输入客户姓名")
+            obtainEvent(AddCustomerScreenEvent.NoNameErrorEvent)
+            return
+        }
+        if (_screenState.value.phone.isEmpty()) {
+            toaster.showToast("请输入客户电话")
+            obtainEvent(AddCustomerScreenEvent.NoPhoneErrorEvent)
+            return
+        }
+        if (_screenState.value.level.isEmpty()) {
+            toaster.showToast("请选择客户等级")
+            obtainEvent(AddCustomerScreenEvent.NoLevelErrorEvent)
+            return
+        }
+        if (_screenState.value.record.isEmpty()) {
+            toaster.showToast("请选择客户诊疗项目")
+            obtainEvent(AddCustomerScreenEvent.NoRecordErrorEvent)
+            return
+        }
+        val state = _screenState.value
+        Log.i("dujun", "name: ${state.name}, phone: ${state.phone}, level: ${state.level}, record: ${state.record}")
+        if (state.returnVisitItems.isNotEmpty()) {
+            state.returnVisitItems.forEachIndexed { index, returnVisit ->
+                Log.i("dujun", "rv title: ${returnVisit.title}, ${returnVisit.humanReadableTime}")
+            }
+        }
     }
 }
