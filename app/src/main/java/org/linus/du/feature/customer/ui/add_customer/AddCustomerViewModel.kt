@@ -48,6 +48,8 @@ class AddCustomerViewModel @Inject constructor(
                 _screenState.value = currentState.copy(showAddReturnVisitDialog = true)
             is AddCustomerScreenEvent.OnAddReturnVisitCancelEvent ->
                 _screenState.value = currentState.copy(showAddReturnVisitDialog = false)
+            is AddCustomerScreenEvent.RecordDescInputEvent ->
+                _screenState.value = currentState.copy(recordDescription = event.desc)
             is AddCustomerScreenEvent.OnReturnVisitTitleInputEvent -> {
                 val returnVisit = ReturnVisit(
                     id = _screenState.value.currentAddingReturnVisit.id,
@@ -126,7 +128,7 @@ class AddCustomerViewModel @Inject constructor(
             return
         }
         val state = _screenState.value
-        Log.i("dujun", "name: ${state.name}, phone: ${state.phone}, level: ${state.level}, record: ${state.record}")
+        Log.i("dujun", "name: ${state.name}, phone: ${state.phone}, level: ${state.level}, record: ${state.record}, recordDesc: ${state.recordDescription}")
         if (state.returnVisitItems.isNotEmpty()) {
             state.returnVisitItems.forEachIndexed { index, returnVisit ->
                 Log.i("dujun", "rv title: ${returnVisit.title}, ${returnVisit.humanReadableTime}")

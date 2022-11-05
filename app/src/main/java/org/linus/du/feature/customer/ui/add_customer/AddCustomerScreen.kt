@@ -121,6 +121,13 @@ private fun ContentView(
                 screenState = state,
                 onRecordInput = { viewModel.obtainEvent(AddCustomerScreenEvent.RecordInputEvent(it)) }
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            RecordDescriptionView(
+                description = state.value.recordDescription,
+                onValueChanged = {
+                    viewModel.obtainEvent(AddCustomerScreenEvent.RecordDescInputEvent(it))
+                }
+            )
             Spacer(modifier = Modifier.height(16.dp))
             AddReturnVisitButtonView(
                 onAddReturnVisit = {viewModel.obtainEvent(AddCustomerScreenEvent.OnAddReturnVisitButtonClickedEvent)}
@@ -170,6 +177,28 @@ private fun AddReturnVisitButtonView(
         )
         Text(text = stringResource(id = R.string.add_return_visit))
     }
+}
+
+@Composable
+fun RecordDescriptionView(
+    description: String,
+    onValueChanged: (String) -> Unit
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = description,
+        onValueChange = onValueChanged,
+        label = { Text("门诊简述") },
+        maxLines = 2,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Ocean300,
+            focusedLabelColor = Ocean300,
+            cursorColor = Ocean300,
+            errorBorderColor = Ocean300,
+            errorLabelColor = Ocean300,
+            errorCursorColor = Ocean300
+        )
+    )
 }
 
 /**
