@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import org.linus.core.ui.common.AnimatedLoadingView
 
 import org.linus.core.ui.common.BaseTopAppBar
 import org.linus.core.ui.theme.*
@@ -79,6 +80,12 @@ fun AddCustomerScreen(
                         }
                     },
                 )
+            }
+            if (screenState.value.isLoading) {
+                AnimatedLoadingView(visible = true)
+            }
+            if (screenState.value.finishWithSuccess) {
+                onBackClick()
             }
         }
     }

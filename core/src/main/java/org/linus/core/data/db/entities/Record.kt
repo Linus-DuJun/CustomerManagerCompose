@@ -8,8 +8,9 @@ import androidx.room.PrimaryKey
 data class Subject(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "customer_name") val customerName: String,
-    @ColumnInfo(name = "customer_phone") val userPhone: String,
+    @ColumnInfo(name = "customer_phone") val customerPhone: String,
     val subject: String,
-    val timeStamp: Long,
+    val time: Long,
+    @ColumnInfo(name = "human_readable_time") val humanReadableTime: String,
     val description: String
 )

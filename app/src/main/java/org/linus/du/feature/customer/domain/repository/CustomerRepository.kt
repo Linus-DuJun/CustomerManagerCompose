@@ -4,5 +4,6 @@ import org.linus.core.data.db.entities.Customer
 
 interface CustomerRepository {
 
-    fun addCustomer(customer: Customer)
+    suspend fun addCustomer(customer: Customer)
+
 }

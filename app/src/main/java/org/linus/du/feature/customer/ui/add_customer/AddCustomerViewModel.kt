@@ -2,16 +2,29 @@ package org.linus.du.feature.customer.ui.add_customer
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import org.linus.core.data.db.entities.Customer
+import org.linus.core.data.db.entities.ReturnVisitEntity
+import org.linus.core.data.db.entities.Subject
+import org.linus.core.utils.extension.getHumanReadableDate
 import org.linus.core.utils.toast.Toaster
 import org.linus.du.feature.customer.domain.repository.CustomerRepository
+import org.linus.du.feature.customer.domain.repository.RecordRepository
+import org.linus.du.feature.customer.domain.repository.ReturnVisitRepository
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class AddCustomerViewModel @Inject constructor(
     private val customerRepository: CustomerRepository,
+    private val recordRepository: RecordRepository,
+    private val returnVisitRepository: ReturnVisitRepository,
     private val toaster: Toaster
 ) : ViewModel() {
     private val _screenState = MutableStateFlow(AddCustomerScreenStateHolder())
@@ -102,7 +115,13 @@ class AddCustomerViewModel @Inject constructor(
                     _screenState.value = currentState.copy(returnVisitItems = it)
                 }
             }
-            is AddCustomerScreenEvent.SaveEvent -> saveCustomer()
+            is AddCustomerScreenEvent.SaveEvent -> {
+                _screenState.value = currentState.copy(isLoading = true)
+                saveCustomer()
+            }
+            is AddCustomerScreenEvent.FinishWithSuccessEvent -> {
+                _screenState.value = currentState.copy(finishWithSuccess = true)
+            }
         }
     }
 
@@ -127,12 +146,51 @@ class AddCustomerViewModel @Inject constructor(
             obtainEvent(AddCustomerScreenEvent.NoRecordErrorEvent)
             return
         }
-        val state = _screenState.value
-        Log.i("dujun", "name: ${state.name}, phone: ${state.phone}, level: ${state.level}, record: ${state.record}, recordDesc: ${state.recordDescription}")
-        if (state.returnVisitItems.isNotEmpty()) {
-            state.returnVisitItems.forEachIndexed { index, returnVisit ->
-                Log.i("dujun", "rv title: ${returnVisit.title}, ${returnVisit.humanReadableTime}")
+
+        val exceptionHandler = CoroutineExceptionHandler { _, e ->
+            Log.i("dujun", "${e.message}")
+        }
+        viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
+            val state = screenState.value
+            val customer = Customer(
+                id = state.phone,
+                name = state.name,
+                type = getCustomerType(state = state)
+            )
+            customerRepository.addCustomer(customer)
+            val record = Subject(
+                id = UUID.randomUUID().toString(),
+                customerName = customer.name,
+                customerPhone = customer.id,
+                subject = state.record,
+                time = System.currentTimeMillis(),
+                humanReadableTime = getHumanReadableDate(),
+                description = state.recordDescription
+            )
+            recordRepository.addRecord(record)
+            if (state.returnVisitItems.isNotEmpty()) {
+                state.returnVisitItems.map {
+                    ReturnVisitEntity(
+                        id = it.id,
+                        customerName = customer.name,
+                        customerPhone = customer.id,
+                        recordId = record.id,
+                        recordTitle = record.subject,
+                        rvTitle = it.title,
+                        rvTime = it.timeStamp,
+                        humanReadableTime = it.humanReadableTime
+                    )
+                }.also {
+                    returnVisitRepository.addReturnVisitItems(it)
+                }
             }
+            toaster.showToast("添加成功")
+            obtainEvent(AddCustomerScreenEvent.FinishWithSuccessEvent)
         }
     }
+
+    private fun getCustomerType(state: AddCustomerScreenStateHolder) =
+        if (state.level ==  SUPER_VIP) 3 else if (state.level == NORMAL_VIP) 2 else 1
+
+
 }

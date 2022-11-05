@@ -9,7 +9,7 @@ class CustomerRepositoryImpl @Inject constructor(
     private val customerDao: CustomerDao
 ) : CustomerRepository {
 
-    override fun addCustomer(customer: Customer) {
-
+    override suspend fun addCustomer(customer: Customer) {
+        customerDao.insert(customer)
     }
 }

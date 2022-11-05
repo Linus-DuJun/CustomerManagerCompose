@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d76568b2dfa513047a372cb29ceca45e",
+    "identityHash": "32ea021c3ca7312f30a7e0ec06f01485",
     "entities": [
       {
         "tableName": "customer",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "Subject",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `customer_name` TEXT NOT NULL, `customer_phone` TEXT NOT NULL, `subject` TEXT NOT NULL, `timeStamp` INTEGER NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `customer_name` TEXT NOT NULL, `customer_phone` TEXT NOT NULL, `subject` TEXT NOT NULL, `time` INTEGER NOT NULL, `human_readable_time` TEXT NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -53,7 +53,7 @@
             "notNull": true
           },
           {
-            "fieldPath": "userPhone",
+            "fieldPath": "customerPhone",
             "columnName": "customer_phone",
             "affinity": "TEXT",
             "notNull": true
@@ -65,9 +65,15 @@
             "notNull": true
           },
           {
-            "fieldPath": "timeStamp",
-            "columnName": "timeStamp",
+            "fieldPath": "time",
+            "columnName": "time",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humanReadableTime",
+            "columnName": "human_readable_time",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -87,8 +93,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "ReturnVisit",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `customer_name` TEXT NOT NULL, `customer_phone` TEXT NOT NULL, `record_title` TEXT NOT NULL, `rv_title` TEXT NOT NULL, `rv_time` INTEGER NOT NULL, `human_readable_time` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "tableName": "ReturnVisitEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `customer_name` TEXT NOT NULL, `customer_phone` TEXT NOT NULL, `record_id` TEXT NOT NULL, `record_title` TEXT NOT NULL, `rv_title` TEXT NOT NULL, `rv_time` INTEGER NOT NULL, `human_readable_time` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -105,6 +111,12 @@
           {
             "fieldPath": "customerPhone",
             "columnName": "customer_phone",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recordId",
+            "columnName": "record_id",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -146,7 +158,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd76568b2dfa513047a372cb29ceca45e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '32ea021c3ca7312f30a7e0ec06f01485')"
     ]
   }
 }

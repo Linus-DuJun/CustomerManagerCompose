@@ -6,10 +6,10 @@ import org.linus.core.data.db.dao.CustomerDao
 import org.linus.core.data.db.dao.ReturnVisitDao
 import org.linus.core.data.db.dao.SubjectDao
 import org.linus.core.data.db.entities.Customer
-import org.linus.core.data.db.entities.ReturnVisit
+import org.linus.core.data.db.entities.ReturnVisitEntity
 import org.linus.core.data.db.entities.Subject
 
-@Database(entities = [Customer::class, Subject::class, ReturnVisit::class], version = 1)
+@Database(entities = [Customer::class, Subject::class, ReturnVisitEntity::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
     abstract fun subjectDao(): SubjectDao

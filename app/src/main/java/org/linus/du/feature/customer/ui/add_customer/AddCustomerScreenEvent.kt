@@ -2,6 +2,7 @@ package org.linus.du.feature.customer.ui.add_customer
 
 sealed class AddCustomerScreenEvent {
     object SaveEvent: AddCustomerScreenEvent()
+    object FinishWithSuccessEvent: AddCustomerScreenEvent()
     object NoNameErrorEvent: AddCustomerScreenEvent()
     object NoPhoneErrorEvent: AddCustomerScreenEvent()
     object NoLevelErrorEvent: AddCustomerScreenEvent()
@@ -9,7 +10,6 @@ sealed class AddCustomerScreenEvent {
     object OnAddReturnVisitButtonClickedEvent: AddCustomerScreenEvent()
     object OnAddReturnVisitCancelEvent: AddCustomerScreenEvent()
     object OnSelectDateEvent: AddCustomerScreenEvent()
-    data class RecordDescriptionInputEvent(val desc: String) : AddCustomerScreenEvent()
     data class RemoveReturnVisitItemEvent(val returnVisit: ReturnVisit) : AddCustomerScreenEvent()
     data class OnReturnVisitDateConfirmedEvent(val time: Long, val humanReadableTime: String): AddCustomerScreenEvent()
     data class OnAddReturnVisitConfirmEvent(val returnVisit: ReturnVisit): AddCustomerScreenEvent()

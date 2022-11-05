@@ -12,7 +12,8 @@ data class ReturnVisit(
 )
 
 data class AddCustomerScreenStateHolder (
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
+    val finishWithSuccess: Boolean = false,
     val showAddReturnVisitDialog: Boolean = false,
     val showDatePickerDialog: Boolean = false,
     val name: String = String.empty(),
