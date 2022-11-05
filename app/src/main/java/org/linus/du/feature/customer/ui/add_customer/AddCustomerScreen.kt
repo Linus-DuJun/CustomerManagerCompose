@@ -1,6 +1,10 @@
 package org.linus.du.feature.customer.ui.add_customer
 
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
@@ -14,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,7 +28,9 @@ import androidx.compose.ui.unit.toSize
 import org.linus.core.ui.common.BaseTopAppBar
 import org.linus.core.ui.theme.Gray200
 import org.linus.core.ui.theme.Gray300
+import org.linus.core.ui.theme.Ocean300
 import org.linus.core.ui.theme.Red500
+import org.linus.core.utils.toast.Toaster
 import org.linus.du.R
 
 @Composable
@@ -73,23 +80,24 @@ private fun ContentView(
                 isError = state.value.noNameError,
                 onValueChanged = { viewModel.obtainEvent(AddCustomerScreenEvent.NameInputEvent(it)) }
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             PhoneView(
                 phone = state.value.phone,
                 isError = state.value.noPhoneError,
                 onValueChanged = { viewModel.obtainEvent(AddCustomerScreenEvent.PhoneInputEvent(it)) }
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             VipLevelView(
                 screenState = state,
                 onVipLevelSelected = { viewModel.obtainEvent(AddCustomerScreenEvent.VipLevelSelectedEvent(it))}
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             RecordView(
                 screenState = state,
                 onRecordInput = { viewModel.obtainEvent(AddCustomerScreenEvent.RecordInputEvent(it)) }
             )
-
+            Spacer(modifier = Modifier.height(16.dp))
+            AddReturnVisitButtonView()
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(modifier = Modifier.height(68.dp)) {
@@ -98,6 +106,33 @@ private fun ContentView(
                 onSaveClick = onSaveClick
             )
         }
+    }
+}
+
+@Composable
+private fun AddReturnVisitButtonView(
+) {
+    val context = LocalContext.current
+    Button(
+        onClick = { Toast.makeText(context, "add return visit", Toast.LENGTH_LONG).show() },
+        modifier = Modifier.size(width = 180.dp, height = 40.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Ocean300,
+            contentColor = Color.White),
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 6.dp,
+            disabledElevation = 4.dp,
+            hoveredElevation = 6.dp,
+            focusedElevation = 6.dp),
+        shape = RoundedCornerShape(4.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_attachment),
+            contentDescription = null,
+            modifier = Modifier.padding(end = 8.dp)
+        )
+        Text(text = stringResource(id = R.string.add_return_visit))
     }
 }
 
