@@ -3,12 +3,15 @@ package org.linus.du.feature.customer.ui
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.ui.Scaffold
 import com.google.accompanist.insets.ui.TopAppBar
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -19,9 +22,11 @@ import org.linus.core.ui.common.RefreshButton
 import org.linus.core.utils.extension.Layout
 import org.linus.core.utils.extension.bodyWidth
 import org.linus.du.R
+import org.linus.du.feature.customer.ui.super_vip.SuperVipViewModel
 
 @Composable
 fun SuperVipScreen(
+    viewModel: SuperVipViewModel = hiltViewModel(),
     refresh: () -> Unit,
     onAddCustomer: () -> Unit
 ) {
@@ -44,18 +49,33 @@ fun SuperVipScreen(
                 SwipeRefreshIndicator(state = state, refreshTriggerDistance = trigger, scale = true)
             }
         ) {
-            LazyColumn(
-                contentPadding = paddingValues,
-                modifier = Modifier.bodyWidth()
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(Layout.gutter))
-                }
-                item {
-                    Text("超优质客气")
-                }
-            }
+            SuperVipContentView(viewModel = viewModel)
         }
+    }
+}
+
+@Composable
+private fun SuperVipContentView(
+    viewModel: SuperVipViewModel,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = Modifier.bodyWidth().padding(16.dp)
+    ) {
+        items(viewModel.numbers) { num ->
+            SuperViewItemView(sv = "Super VIP $num")
+        }
+    }
+}
+
+@Composable
+private fun SuperViewItemView(sv: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+    ) {
+        Text(sv)
     }
 }
 
