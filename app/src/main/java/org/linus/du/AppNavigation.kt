@@ -1,5 +1,6 @@
 package org.linus.du
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -95,6 +96,7 @@ private fun NavGraphBuilder.addSuperVipTopLevel(
         startDestination = LeafScreen.SuperVip.createRoute(Screen.SuperVip)
     ) {
         addSuperVipScreen(navController, root = Screen.SuperVip, onAddCustomer = onAddCustomer)
+        addCustomerDetailScreen(navController, root = Screen.SuperVip)
     }
 }
 
@@ -139,8 +141,23 @@ private fun NavGraphBuilder.addSuperVipScreen(
     ) {
         SuperVipScreen(
             refresh = { "refreshing" },
+            onCheckCustomerDetailInfo = {
+                navController.navigate(LeafScreen.ShowCustomerDetails.createRoute(root, 56))
+            },
             onAddCustomer = onAddCustomer
         )
+    }
+}
+
+@ExperimentalAnimationApi
+private fun NavGraphBuilder.addCustomerDetailScreen(
+    navController: NavController,
+    root: Screen
+) {
+    composable(
+        route = LeafScreen.ShowCustomerDetails.createRoute(root, 56)
+    ) {
+        CustomerDetailInfoScreen()
     }
 }
 

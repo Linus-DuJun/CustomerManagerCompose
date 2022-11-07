@@ -39,9 +39,6 @@ fun CustomerManagerComposeTheme(
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var toaster: Toaster
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
@@ -59,7 +56,6 @@ class MainActivity : ComponentActivity() {
             CustomerManagerComposeTheme {
               HomeScreen(
                   onAddCustomer = {
-                      toaster.showToast("test show toaster")
                       startActivity(Intent(this@MainActivity, AddCustomerActivity::class.java))
                   }
               )
