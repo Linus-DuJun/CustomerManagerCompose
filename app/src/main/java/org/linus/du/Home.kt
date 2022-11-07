@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -16,11 +17,14 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -28,6 +32,7 @@ import com.google.accompanist.insets.ui.BottomNavigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import org.linus.core.ui.theme.Ocean300
 
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -54,7 +59,28 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth())
         },
         drawerContent = {
-            Text("test")
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(
+                    onClick = onBackup,
+                    modifier = Modifier.fillMaxWidth(1f).height(48.dp).padding(horizontal = 8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Ocean300,
+                        contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 4.dp,
+                        pressedElevation = 6.dp,
+                        disabledElevation = 4.dp,
+                        hoveredElevation = 6.dp,
+                        focusedElevation = 6.dp),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(text = stringResource(id = R.string.backup_title))
+                }
+            }
         }
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -63,7 +89,9 @@ fun HomeScreen(
                     navController = navController,
                     onAddCustomer = onAddCustomer,
                     onBackup = onBackup,
-                    modifier = Modifier.weight(1f).fillMaxHeight()
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
                 )
             }
         }

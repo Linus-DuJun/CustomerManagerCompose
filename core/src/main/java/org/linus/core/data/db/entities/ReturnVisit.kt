@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "return_visit")
 data class ReturnVisitEntity(
     @PrimaryKey val id: Long,
     @ColumnInfo(name = "customer_name") val customerName: String,
