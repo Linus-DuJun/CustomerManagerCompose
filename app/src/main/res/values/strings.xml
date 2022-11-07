@@ -15,4 +15,5 @@
     <string name="backup_title">数据备份</string>
     <string name="backup_export">导出备份</string>
     <string name="backup_import">导入恢复</string>
+    <string name="string_empty">这里什么都还没有哦</string>
 </resources>
