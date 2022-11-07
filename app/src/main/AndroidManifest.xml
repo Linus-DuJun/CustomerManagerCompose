@@ -29,7 +29,11 @@
                 android:value="" />
         </activity>
 
-        <activity android:name=".feature.customer.ui.add_customer.AddCustomerActivity" />
+        <activity android:name=".feature.customer.ui.add_customer.AddCustomerActivity"
+            android:launchMode="singleTop" />
+
+        <activity android:name=".feature.backup.ui.BackupActivity"
+            android:launchMode="singleTop" />
 
     </application>
 

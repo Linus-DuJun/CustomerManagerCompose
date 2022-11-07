@@ -19,6 +19,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.linus.core.ui.common.AddCustomerButton
+import org.linus.core.ui.common.BackupButton
 import org.linus.core.ui.common.RefreshButton
 import org.linus.core.utils.extension.Layout
 import org.linus.core.utils.extension.bodyWidth
@@ -30,7 +31,8 @@ import org.linus.du.feature.customer.ui.return_visit.ReturnVisitViewModel
 fun ReturnVisitScreen(
     viewModel: ReturnVisitViewModel = hiltViewModel(),
     refresh: () -> Unit,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -39,7 +41,9 @@ fun ReturnVisitScreen(
             ReturnVisitAppBar(
                 onAddCustomer = onAddCustomer,
                 refreshing = false,
-                onRefreshActionClick = refresh)
+                onRefreshActionClick = refresh,
+                onBackup = onBackup
+            )
         },
         modifier = Modifier
     ) { paddingValues ->
@@ -85,6 +89,7 @@ private fun ReturnVisitAppBar(
     onAddCustomer: () -> Unit,
     refreshing: Boolean,
     onRefreshActionClick: () -> Unit,
+    onBackup: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -97,14 +102,15 @@ private fun ReturnVisitAppBar(
         title = { Text(text = stringResource(id = R.string.return_visit_schedule)) },
         actions = {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Crossfade(
-                    targetState = refreshing,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) { isRefreshing ->
-                    if (!isRefreshing) {
-                        RefreshButton(onClick = onRefreshActionClick)
-                    }
-                }
+//                Crossfade(
+//                    targetState = refreshing,
+//                    modifier = Modifier.align(Alignment.CenterVertically)
+//                ) { isRefreshing ->
+//                    if (!isRefreshing) {
+//                        RefreshButton(onClick = onRefreshActionClick)
+//                    }
+//                }
+                BackupButton(onClick = onBackup)
                 AddCustomerButton(onClick = onAddCustomer)
             }
         }

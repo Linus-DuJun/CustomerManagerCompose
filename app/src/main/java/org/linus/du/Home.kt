@@ -32,7 +32,8 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreen(
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
 ) {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberAnimatedNavController(bottomSheetNavigator)
@@ -61,6 +62,7 @@ fun HomeScreen(
                 AppNavigation(
                     navController = navController,
                     onAddCustomer = onAddCustomer,
+                    onBackup = onBackup,
                     modifier = Modifier.weight(1f).fillMaxHeight()
                 )
             }

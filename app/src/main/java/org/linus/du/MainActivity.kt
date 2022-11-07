@@ -14,6 +14,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import org.linus.core.ui.theme.*
 import org.linus.core.utils.toast.Toaster
+import org.linus.du.feature.backup.ui.BackupActivity
 import org.linus.du.feature.customer.ui.add_customer.AddCustomerActivity
 import javax.inject.Inject
 
@@ -56,7 +57,10 @@ class MainActivity : ComponentActivity() {
             CustomerManagerComposeTheme {
               HomeScreen(
                   onAddCustomer = {
-                      startActivity(Intent(this@MainActivity, AddCustomerActivity::class.java))
+                        startActivity(Intent(this@MainActivity, AddCustomerActivity::class.java))
+                  },
+                  onBackup = {
+                        startActivity(Intent(this@MainActivity, BackupActivity::class.java))
                   }
               )
             }

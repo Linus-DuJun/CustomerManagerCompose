@@ -1,6 +1,5 @@
 package org.linus.du
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,7 +8,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import org.linus.du.feature.customer.ui.*
-import org.linus.du.feature.customer.ui.add_customer.AddCustomerScreen
 
 internal sealed class Screen(val route: String) {
     object ReturnVisitScreen: Screen("return_visit")
@@ -42,6 +40,7 @@ private sealed class LeafScreen(
 internal fun AppNavigation(
     navController: NavHostController,
     onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
     modifier: Modifier
 ) {
     AnimatedNavHost(
@@ -53,49 +52,52 @@ internal fun AppNavigation(
         popExitTransition = { defaultPopExitTransition() },
         modifier = modifier
     ) {
-        addReturnVisitTopLevel(navController, onAddCustomer)
-        addSuperVipTopLevel(navController, onAddCustomer)
-        addNormalVipTopLevel(navController, onAddCustomer)
-        addBadCustomerTopLevel(navController, onAddCustomer)
+        addReturnVisitTopLevel(navController, onAddCustomer = onAddCustomer, onBackup = onBackup)
+        addSuperVipTopLevel(navController, onAddCustomer = onAddCustomer, onBackup = onBackup)
+        addNormalVipTopLevel(navController, onAddCustomer = onAddCustomer, onBackup = onBackup)
+        addBadCustomerTopLevel(navController, onAddCustomer = onAddCustomer, onBackup = onBackup)
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addBadCustomerTopLevel(
     navController: NavController,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
 ) {
     navigation(
         route = Screen.BadCustomer.route,
         startDestination =  LeafScreen.BadCustomer.createRoute(Screen.BadCustomer)
     ) {
-        addBadCustomerScreen(navController, Screen.BadCustomer, onAddCustomer = onAddCustomer)
+        addBadCustomerScreen(navController, Screen.BadCustomer, onAddCustomer = onAddCustomer, onBackup = onBackup)
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addNormalVipTopLevel(
     navController: NavController,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
 ) {
     navigation(
         route = Screen.NormalVip.route,
         startDestination = LeafScreen.NormalVip.createRoute(Screen.NormalVip)
     ) {
-        addNormalVipScreen(navController, Screen.NormalVip, onAddCustomer)
+        addNormalVipScreen(navController, Screen.NormalVip, onAddCustomer, onBackup)
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addSuperVipTopLevel(
     navController: NavController,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
 ) {
     navigation(
         route = Screen.SuperVip.route,
         startDestination = LeafScreen.SuperVip.createRoute(Screen.SuperVip)
     ) {
-        addSuperVipScreen(navController, root = Screen.SuperVip, onAddCustomer = onAddCustomer)
+        addSuperVipScreen(navController, root = Screen.SuperVip, onAddCustomer = onAddCustomer, onBackup = onBackup)
         addCustomerDetailScreen(navController, root = Screen.SuperVip)
     }
 }
@@ -103,13 +105,19 @@ private fun NavGraphBuilder.addSuperVipTopLevel(
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addReturnVisitTopLevel(
     navController: NavController,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
 ) {
     navigation(
         route = Screen.ReturnVisitScreen.route,
         startDestination = LeafScreen.ReturnVisit.createRoute(Screen.ReturnVisitScreen)
     ) {
-        addReturnVisitScreen(navController, Screen.ReturnVisitScreen, onAddCustomer)
+        addReturnVisitScreen(
+            navController = navController,
+            root = Screen.ReturnVisitScreen,
+            onAddCustomer = onAddCustomer,
+            onBackup = onBackup
+        )
     }
 }
 
@@ -118,14 +126,16 @@ private fun NavGraphBuilder.addReturnVisitTopLevel(
 private fun NavGraphBuilder.addReturnVisitScreen(
     navController: NavController,
     root: Screen,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
 ) {
     composable(
         route = LeafScreen.ReturnVisit.createRoute(root),
     ) {
        ReturnVisitScreen(
            refresh = { "refreshing" },
-           onAddCustomer = onAddCustomer
+           onAddCustomer = onAddCustomer,
+           onBackup = onBackup
        )
     }
 }
@@ -134,6 +144,7 @@ private fun NavGraphBuilder.addReturnVisitScreen(
 private fun NavGraphBuilder.addSuperVipScreen(
     navController: NavController,
     onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
     root: Screen
 ) {
     composable(
@@ -144,7 +155,8 @@ private fun NavGraphBuilder.addSuperVipScreen(
             onCheckCustomerDetailInfo = {
                 navController.navigate(LeafScreen.ShowCustomerDetails.createRoute(root, 56))
             },
-            onAddCustomer = onAddCustomer
+            onAddCustomer = onAddCustomer,
+            onBackup = onBackup
         )
     }
 }
@@ -165,14 +177,16 @@ private fun NavGraphBuilder.addCustomerDetailScreen(
 private fun NavGraphBuilder.addNormalVipScreen(
     navController: NavController,
     root: Screen,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
 ) {
     composable(
         route = LeafScreen.NormalVip.createRoute(root)
     ) {
         NormalVipScreen(
             refresh = { "refreshing" },
-            onAddCustomer = onAddCustomer
+            onAddCustomer = onAddCustomer,
+            onBackup = onBackup
         )
     }
 }
@@ -181,14 +195,16 @@ private fun NavGraphBuilder.addNormalVipScreen(
 private fun NavGraphBuilder.addBadCustomerScreen(
     navController: NavController,
     root: Screen,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit,
 ) {
     composable(
         route = LeafScreen.BadCustomer.createRoute(root)
     ) {
         BadCustomerScreen(
             refresh = { "refreshing" },
-            onAddCustomer = onAddCustomer
+            onAddCustomer = onAddCustomer,
+            onBackup = onBackup
         )
     }
 }

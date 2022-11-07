@@ -24,6 +24,7 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.common.AddCustomerButton
+import org.linus.core.ui.common.BackupButton
 import org.linus.core.ui.common.RefreshButton
 import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Green
@@ -37,7 +38,8 @@ fun SuperVipScreen(
     viewModel: SuperVipViewModel = hiltViewModel(),
     refresh: () -> Unit,
     onCheckCustomerDetailInfo: () -> Unit,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onBackup: () -> Unit
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -46,7 +48,9 @@ fun SuperVipScreen(
             SuperVipAppBar(
                 onAddCustomer = onAddCustomer,
                 refreshing = false,
-                onRefreshActionClick = refresh)
+                onRefreshActionClick = refresh,
+                onBackup = onBackup
+            )
         },
         modifier = Modifier
     ) { paddingValues ->
@@ -75,7 +79,6 @@ private fun SuperVipContentView(
     LazyColumn(
         modifier = Modifier
             .bodyWidth()
-            .padding(16.dp)
     ) {
         items(viewModel.numbers) { num ->
             SuperViewItemView(sv = "Super VIP $num", onCheckCustomerDetailInfo = onCheckCustomerDetailInfo)
@@ -137,6 +140,7 @@ private fun SuperVipAppBar(
     onAddCustomer: () -> Unit,
     refreshing: Boolean,
     onRefreshActionClick: () -> Unit,
+    onBackup: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -149,14 +153,15 @@ private fun SuperVipAppBar(
         title = { Text(text = stringResource(id = R.string.super_vip_title)) },
         actions = {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Crossfade(
-                    targetState = refreshing,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) { isRefreshing ->
-                    if (!isRefreshing) {
-                        RefreshButton(onClick = onRefreshActionClick)
-                    }
-                }
+//                Crossfade(
+//                    targetState = refreshing,
+//                    modifier = Modifier.align(Alignment.CenterVertically)
+//                ) { isRefreshing ->
+//                    if (!isRefreshing) {
+//                        RefreshButton(onClick = onRefreshActionClick)
+//                    }
+//                }
+                BackupButton(onClick = onBackup)
                 AddCustomerButton(onClick = onAddCustomer)
             }
         }

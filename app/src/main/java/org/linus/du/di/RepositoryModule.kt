@@ -5,7 +5,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
-import dagger.hilt.components.SingletonComponent
+import org.linus.du.feature.backup.data.BackupRepositoryImpl
+import org.linus.du.feature.backup.domain.repository.BackupRepository
 import org.linus.du.feature.customer.data.repository.CustomerRepositoryImpl
 import org.linus.du.feature.customer.data.repository.RecordRepositoryImpl
 import org.linus.du.feature.customer.data.repository.ReturnVisitRepositoryImpl
@@ -28,4 +29,8 @@ abstract class RepositoryModule {
     @Binds
     @ViewModelScoped
     abstract fun bindReturnVisitRepository(repositoryImpl: ReturnVisitRepositoryImpl): ReturnVisitRepository
+
+    @Binds
+    @ViewModelScoped
+    abstract fun bindBackupRepository(repository: BackupRepositoryImpl): BackupRepository
 }

@@ -21,7 +21,7 @@ fun AnimatedLoadingView(visible: Boolean) {
 }
 
 @Composable
-private fun LoadingView() {
+fun LoadingView() {
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
