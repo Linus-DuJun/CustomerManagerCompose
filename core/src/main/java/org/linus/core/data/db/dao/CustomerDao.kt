@@ -14,13 +14,13 @@ abstract class CustomerDao : BaseDao<Customer>() {
     abstract fun getCustomerById(id: Int): Flow<Customer>
 
     @Query("SELECT * FROM customer WHERE type = 3")
-    abstract fun getSuperCustomers(): Flow<PagingSource<Int, Customer>>
+    abstract fun getSuperCustomers(): PagingSource<Int, Customer>
 
     @Query("SELECT * FROM customer WHERE type = 2")
-    abstract fun getNormalCustomers(): Flow<PagingSource<Int, Customer>>
+    abstract fun getNormalCustomers(): PagingSource<Int, Customer>
 
     @Query("SELECT * FROM customer WHERE type = 1")
-    abstract fun getBadCustomers(): Flow<PagingSource<Int, Customer>>
+    abstract fun getBadCustomers(): PagingSource<Int, Customer>
 
     @Query("UPDATE customer SET type = :level WHERE id = :phone")
     abstract fun updateCustomerLevel(phone: String, level: Int)

@@ -13,10 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.google.accompanist.insets.ui.Scaffold
 import com.google.accompanist.insets.ui.TopAppBar
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -24,6 +28,7 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.common.AddCustomerButton
+import org.linus.core.ui.common.LoadingView
 import org.linus.core.ui.common.RefreshButton
 import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Green
@@ -51,18 +56,12 @@ fun SuperVipScreen(
         },
         modifier = Modifier
     ) { paddingValues ->
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = false),
-            onRefresh = refresh,
-            indicatorPadding = paddingValues,
-            indicator = { state, trigger ->
-                SwipeRefreshIndicator(state = state, refreshTriggerDistance = trigger, scale = true)
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 72.dp)
         ) {
-            SuperVipContentView(
-                viewModel = viewModel,
-                onCheckCustomerDetailInfo = onCheckCustomerDetailInfo
-            )
+            SuperVipContentView(viewModel = viewModel, onCheckCustomerDetailInfo = onCheckCustomerDetailInfo)
         }
     }
 }
@@ -73,15 +72,67 @@ private fun SuperVipContentView(
     onCheckCustomerDetailInfo: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .bodyWidth()
-    ) {
-        items(viewModel.numbers) { num ->
-            SuperViewItemView(sv = "Super VIP $num", onCheckCustomerDetailInfo = onCheckCustomerDetailInfo)
+    val superCustomers = viewModel.superCustomers.collectAsLazyPagingItems()
+    if (superCustomers.itemCount == 0) {
+        Text("还没有超优客户哦")
+    } else {
+        LazyColumn(
+            modifier = Modifier.bodyWidth()
+        ) {
+            items(items = superCustomers) { customer ->
+                SuperViewItemView(sv = "Super VIP ${customer!!.name}", onCheckCustomerDetailInfo = onCheckCustomerDetailInfo)
+            }
+            superCustomers.apply {
+                when {
+                    loadState.refresh is LoadState.Loading -> {
+                        item { LoadingView() }
+                    }
+                    loadState.refresh is LoadState.NotLoading -> {
+                        // TODO add empty
+                    }
+                    loadState.refresh is LoadState.Error -> {
+                        val e = superCustomers.loadState.refresh as LoadState.Error
+                        // TODO add error item and retry
+                    }
+                    loadState.append is LoadState.Error -> {
+                        val e = superCustomers.loadState.append as LoadState.Error
+                        item {
+                            ErrorItem(
+                                message = e.error.localizedMessage!!,
+                                onClickRetry = { retry() }
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
+
+@Composable
+fun ErrorItem(
+    message: String,
+    modifier: Modifier = Modifier,
+    onClickRetry: () -> Unit
+) {
+    Row(
+        modifier = modifier.padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = message,
+            maxLines = 1,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.h6,
+            color = Color.Red
+        )
+        OutlinedButton(onClick = onClickRetry) {
+            Text(text = "Try again")
+        }
+    }
+}
+
 
 @Composable
 private fun SuperViewItemView(
