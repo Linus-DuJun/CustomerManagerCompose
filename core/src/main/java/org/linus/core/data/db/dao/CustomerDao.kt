@@ -1,5 +1,6 @@
 package org.linus.core.data.db.dao
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import org.linus.core.data.db.entities.Customer
@@ -10,8 +11,19 @@ abstract class CustomerDao : BaseDao<Customer>() {
     abstract fun getAll(): Flow<List<Customer>>
 
     @Query("SELECT * FROM customer WHERE id = :id")
-    abstract fun getCustomerById(id: Int): Customer
+    abstract fun getCustomerById(id: Int): Flow<Customer>
 
+    @Query("SELECT * FROM customer WHERE type = 3")
+    abstract fun getSuperCustomers(): Flow<PagingSource<Int, Customer>>
+
+    @Query("SELECT * FROM customer WHERE type = 2")
+    abstract fun getNormalCustomers(): Flow<PagingSource<Int, Customer>>
+
+    @Query("SELECT * FROM customer WHERE type = 1")
+    abstract fun getBadCustomers(): Flow<PagingSource<Int, Customer>>
+
+    @Query("UPDATE customer SET type = :level WHERE id = :phone")
+    abstract fun updateCustomerLevel(phone: String, level: Int)
 
     @Delete
     abstract fun delete(customer: Customer)
