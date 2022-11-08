@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.linus.core.utils.toast.Toaster
 import org.linus.du.feature.customer.domain.repository.ReturnVisitRepository
@@ -24,11 +21,11 @@ class ReturnVisitViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val items = repository.getReturnVisitItems().first()
-            obtainEvent(ReturnVisitScreenEvent.ItemsLoadedEvent(items = items))
+            repository.getReturnVisitItems().collectLatest {
+                obtainEvent(ReturnVisitScreenEvent.ItemsLoadedEvent(items = it))
+            }
         }
     }
-
 
     fun obtainEvent(event: ReturnVisitScreenEvent) {
         reduce(event, _screenState.value)

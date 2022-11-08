@@ -88,7 +88,6 @@ fun HomeScreen(
                 AppNavigation(
                     navController = navController,
                     onAddCustomer = onAddCustomer,
-                    onBackup = onBackup,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()

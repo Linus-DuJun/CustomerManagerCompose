@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -19,10 +20,7 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.linus.core.data.db.entities.ReturnVisitEntity
 import org.linus.core.ui.common.AddCustomerButton
-import org.linus.core.ui.common.BackupButton
 import org.linus.core.ui.common.LoadingView
-import org.linus.core.utils.extension.Layout
-import org.linus.core.utils.extension.bodyWidth
 import org.linus.du.R
 import org.linus.du.feature.customer.ui.return_visit.ReturnVisitViewModel
 
@@ -30,8 +28,7 @@ import org.linus.du.feature.customer.ui.return_visit.ReturnVisitViewModel
 fun ReturnVisitScreen(
     viewModel: ReturnVisitViewModel = hiltViewModel(),
     refresh: () -> Unit,
-    onAddCustomer: () -> Unit,
-    onBackup: () -> Unit,
+    onAddCustomer: () -> Unit
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -40,33 +37,21 @@ fun ReturnVisitScreen(
             ReturnVisitAppBar(
                 onAddCustomer = onAddCustomer,
                 refreshing = false,
-                onRefreshActionClick = refresh,
-                onBackup = onBackup
+                onRefreshActionClick = refresh
             )
         },
         modifier = Modifier
     ) { paddingValues ->
         val screenState = viewModel.screenState.collectAsState()
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = false),
-            onRefresh = refresh,
-            indicatorPadding = paddingValues,
-            indicator = { state, trigger ->
-                SwipeRefreshIndicator(state = state, refreshTriggerDistance = trigger, scale = true)
-            }
-        ) {
-            if (screenState.value.isLoading) {
-                LoadingView()
+        if (screenState.value.isLoading) {
+            LoadingView()
+        } else {
+            if (screenState.value.items.isEmpty()) {
+                EmptyView()
             } else {
-                if (screenState.value.items.isEmpty()) {
-                    EmptyView()
-                } else {
-                    ReturnVisitListView(
-                        items = screenState.value.items,
-                        refresh = refresh,
-                        paddingValues = paddingValues
-                    )
-                }
+                ReturnVisitListView(
+                    items = screenState.value.items
+                )
             }
         }
     }
@@ -74,20 +59,25 @@ fun ReturnVisitScreen(
 
 @Composable
 private fun ReturnVisitListView(
-    refresh: () -> Unit,
     items: List<ReturnVisitEntity>,
-    paddingValues: PaddingValues
 ) {
-
+    LazyColumn(
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 72.dp)
+    ) {
+        items(items = items) { item ->
+            ReturnVisitItemView(item = item)
+        }
+    }
 }
 
 @Composable
 private fun EmptyView() {
     Box(
         modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Text(text = stringResource(id = R.string.string_empty),
-            style = MaterialTheme.typography.h3
+            style = MaterialTheme.typography.h5,
         )
     }
 }
@@ -108,7 +98,6 @@ private fun ReturnVisitAppBar(
     onAddCustomer: () -> Unit,
     refreshing: Boolean,
     onRefreshActionClick: () -> Unit,
-    onBackup: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -129,7 +118,6 @@ private fun ReturnVisitAppBar(
 //                        RefreshButton(onClick = onRefreshActionClick)
 //                    }
 //                }
-                BackupButton(onClick = onBackup)
                 AddCustomerButton(onClick = onAddCustomer)
             }
         }

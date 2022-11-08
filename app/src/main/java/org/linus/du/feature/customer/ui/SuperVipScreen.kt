@@ -24,7 +24,6 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.common.AddCustomerButton
-import org.linus.core.ui.common.BackupButton
 import org.linus.core.ui.common.RefreshButton
 import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Green
@@ -38,8 +37,7 @@ fun SuperVipScreen(
     viewModel: SuperVipViewModel = hiltViewModel(),
     refresh: () -> Unit,
     onCheckCustomerDetailInfo: () -> Unit,
-    onAddCustomer: () -> Unit,
-    onBackup: () -> Unit
+    onAddCustomer: () -> Unit
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -48,8 +46,7 @@ fun SuperVipScreen(
             SuperVipAppBar(
                 onAddCustomer = onAddCustomer,
                 refreshing = false,
-                onRefreshActionClick = refresh,
-                onBackup = onBackup
+                onRefreshActionClick = refresh
             )
         },
         modifier = Modifier
@@ -140,7 +137,6 @@ private fun SuperVipAppBar(
     onAddCustomer: () -> Unit,
     refreshing: Boolean,
     onRefreshActionClick: () -> Unit,
-    onBackup: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -161,7 +157,6 @@ private fun SuperVipAppBar(
 //                        RefreshButton(onClick = onRefreshActionClick)
 //                    }
 //                }
-                BackupButton(onClick = onBackup)
                 AddCustomerButton(onClick = onAddCustomer)
             }
         }
