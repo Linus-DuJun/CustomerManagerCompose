@@ -73,35 +73,31 @@ private fun SuperVipContentView(
     modifier: Modifier = Modifier
 ) {
     val superCustomers = viewModel.superCustomers.collectAsLazyPagingItems()
-    if (superCustomers.itemCount == 0) {
-        Text("还没有超优客户哦")
-    } else {
-        LazyColumn(
-            modifier = Modifier.bodyWidth()
-        ) {
-            items(items = superCustomers) { customer ->
-                SuperViewItemView(sv = "Super VIP ${customer!!.name}", onCheckCustomerDetailInfo = onCheckCustomerDetailInfo)
-            }
-            superCustomers.apply {
-                when {
-                    loadState.refresh is LoadState.Loading -> {
-                        item { LoadingView() }
-                    }
-                    loadState.refresh is LoadState.NotLoading -> {
-                        // TODO add empty
-                    }
-                    loadState.refresh is LoadState.Error -> {
-                        val e = superCustomers.loadState.refresh as LoadState.Error
-                        // TODO add error item and retry
-                    }
-                    loadState.append is LoadState.Error -> {
-                        val e = superCustomers.loadState.append as LoadState.Error
-                        item {
-                            ErrorItem(
-                                message = e.error.localizedMessage!!,
-                                onClickRetry = { retry() }
-                            )
-                        }
+    LazyColumn(
+        modifier = Modifier.bodyWidth()
+    ) {
+        items(items = superCustomers) { customer ->
+            SuperViewItemView(sv = "Super VIP ${customer!!.name}", onCheckCustomerDetailInfo = onCheckCustomerDetailInfo)
+        }
+        superCustomers.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    item { LoadingView() }
+                }
+                loadState.refresh is LoadState.NotLoading -> {
+                    // TODO add empty
+                }
+                loadState.refresh is LoadState.Error -> {
+                    val e = superCustomers.loadState.refresh as LoadState.Error
+                    // TODO add error item and retry
+                }
+                loadState.append is LoadState.Error -> {
+                    val e = superCustomers.loadState.append as LoadState.Error
+                    item {
+                        ErrorItem(
+                            message = e.error.localizedMessage!!,
+                            onClickRetry = { retry() }
+                        )
                     }
                 }
             }
