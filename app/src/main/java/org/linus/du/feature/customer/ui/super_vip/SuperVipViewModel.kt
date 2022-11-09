@@ -24,10 +24,9 @@ class SuperVipViewModel @Inject constructor(
 ) : ViewModel() {
 
     val superCustomers: Flow<PagingData<Customer>> = Pager(
-        PagingConfig(pageSize = 30)
+        PagingConfig(pageSize = 30, prefetchDistance = 150)
     ) {
         repository.getSuperCustomers()
     }.flow.flowOn(Dispatchers.IO).cachedIn(viewModelScope)
 
-    val numbers = listOf(1, 2, 3, 4, 5)
 }

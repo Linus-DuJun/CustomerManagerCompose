@@ -90,6 +90,7 @@ private fun NavGraphBuilder.addNormalVipTopLevel(
             onAddCustomer = onAddCustomer,
             onShowBottomSheet = onShowBottomSheet
         )
+        addCustomerDetailScreen(navController, root = Screen.NormalVip)
     }
 }
 
@@ -188,6 +189,9 @@ private fun NavGraphBuilder.addNormalVipScreen(
         NormalVipScreen(
             refresh = { "refreshing" },
             onAddCustomer = onAddCustomer,
+            onCheckCustomerDetailInfo = {
+                navController.navigate(LeafScreen.ShowCustomerDetails.createRoute(root, 56))
+            },
             onShowBottomSheet = onShowBottomSheet
         )
     }

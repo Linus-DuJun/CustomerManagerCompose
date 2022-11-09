@@ -62,9 +62,9 @@ fun BadCustomerScreen(
                 item {
                     Text("客诉客户")
                 }
-                items(viewModel.numbers) { num -> 
-                    BadCustomerItemView(bs = "客诉客户 $num")
-                }
+//                items(viewModel.numbers) { num ->
+//                    BadCustomerItemView(bs = "客诉客户 $num")
+//                }
             }
         }
     }

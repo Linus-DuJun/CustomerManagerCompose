@@ -28,6 +28,7 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.common.AddCustomerButton
+import org.linus.core.ui.common.ErrorItem
 import org.linus.core.ui.common.LoadingView
 import org.linus.core.ui.common.RefreshButton
 import org.linus.core.ui.theme.Gray300
@@ -111,30 +112,6 @@ private fun SuperVipContentView(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ErrorItem(
-    message: String,
-    modifier: Modifier = Modifier,
-    onClickRetry: () -> Unit
-) {
-    Row(
-        modifier = modifier.padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = message,
-            maxLines = 1,
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.h6,
-            color = Color.Red
-        )
-        OutlinedButton(onClick = onClickRetry) {
-            Text(text = "Try again")
         }
     }
 }

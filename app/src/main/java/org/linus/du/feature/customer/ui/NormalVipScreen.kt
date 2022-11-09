@@ -1,25 +1,31 @@
 package org.linus.du.feature.customer.ui
 
-import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.google.accompanist.insets.ui.Scaffold
 import com.google.accompanist.insets.ui.TopAppBar
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.common.AddCustomerButton
+import org.linus.core.ui.common.ErrorItem
+import org.linus.core.ui.common.LoadingView
 import org.linus.core.ui.common.RefreshButton
+import org.linus.core.ui.theme.Gray300
+import org.linus.core.ui.theme.Green
 import org.linus.core.utils.extension.Layout
 import org.linus.core.utils.extension.bodyWidth
 import org.linus.du.R
@@ -29,6 +35,7 @@ import org.linus.du.feature.customer.ui.normal_vip.NormalVipViewModel
 fun NormalVipScreen(
     viewModel: NormalVipViewModel = hiltViewModel(),
     refresh: () ->Unit,
+    onCheckCustomerDetailInfo: () -> Unit,
     onAddCustomer: () -> Unit,
     onShowBottomSheet: (Customer) -> Unit,
 ) {
@@ -44,26 +51,57 @@ fun NormalVipScreen(
         },
         modifier = Modifier
     ) { paddingValues ->
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = false),
-            onRefresh = refresh,
-            indicatorPadding = paddingValues,
-            indicator = { state, trigger ->
-                SwipeRefreshIndicator(state = state, refreshTriggerDistance = trigger, scale = true)
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 56.dp)
         ) {
-            LazyColumn(
-                contentPadding = paddingValues,
-                modifier = Modifier.bodyWidth()
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(Layout.gutter))
+            NormalCustomerContentView(
+                viewModel = viewModel,
+                onCheckCustomerDetailInfo = onCheckCustomerDetailInfo,
+                onShowBottomSheet = onShowBottomSheet
+            )
+        }
+    }
+}
+
+@Composable
+private fun NormalCustomerContentView(
+    viewModel: NormalVipViewModel,
+    onCheckCustomerDetailInfo: () -> Unit,
+    onShowBottomSheet: (Customer) -> Unit
+) {
+    val superCustomers = viewModel.normalCustomers.collectAsLazyPagingItems()
+    LazyColumn(
+        modifier = Modifier.bodyWidth().padding(start = 16.dp)
+    ) {
+        items(items = superCustomers) { customer ->
+            NormalCustomerItemView(
+                customer = customer!!,
+                onCheckCustomerDetailInfo = onCheckCustomerDetailInfo,
+                onShowBottomSheet = onShowBottomSheet
+            )
+        }
+        superCustomers.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    item { LoadingView() }
                 }
-                item {
-                    Text("一般客户")
+                loadState.refresh is LoadState.NotLoading -> {
+                    // TODO add empty
                 }
-                items(viewModel.numbers) { num ->
-                    NormalVipItemView("一般客户 $num")
+                loadState.refresh is LoadState.Error -> {
+                    val e = superCustomers.loadState.refresh as LoadState.Error
+                    // TODO add error item and retry
+                }
+                loadState.append is LoadState.Error -> {
+                    val e = superCustomers.loadState.append as LoadState.Error
+                    item {
+                        ErrorItem(
+                            message = e.error.localizedMessage!!,
+                            onClickRetry = { retry() }
+                        )
+                    }
                 }
             }
         }
@@ -71,13 +109,50 @@ fun NormalVipScreen(
 }
 
 @Composable
-private fun NormalVipItemView(ns: String) {
+private fun NormalCustomerItemView(
+    customer: Customer,
+    onCheckCustomerDetailInfo: () -> Unit,
+    onShowBottomSheet: (Customer) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
+            .clickable {
+                onCheckCustomerDetailInfo.invoke()
+            },
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = ns)
+        Icon(
+            painter = painterResource(id = R.drawable.ic_bookmark),
+            contentDescription = null,
+            modifier = Modifier.size(width = 22.dp, height = 24.dp)
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
+        Column(
+            modifier = Modifier
+                .weight(1f),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row {
+                Text(customer.name, style = MaterialTheme.typography.body1)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("32岁", style = MaterialTheme.typography.body1)
+            }
+            Text(customer.id, style = MaterialTheme.typography.body2)
+        }
+        Spacer(modifier = Modifier.padding(8.dp))
+        IconButton(
+            onClick = { onShowBottomSheet(customer) }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = null,
+                tint = Gray300
+            )
+        }
     }
 }
 

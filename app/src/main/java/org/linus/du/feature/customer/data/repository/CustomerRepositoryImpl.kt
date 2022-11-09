@@ -21,9 +21,9 @@ class CustomerRepositoryImpl @Inject constructor(
     override fun getSuperCustomers(): PagingSource<Int, Customer> =
         customerDao.getSuperCustomers()
 
-    override suspend fun getNormalCustomers(): PagingSource<Int, Customer> =
+    override fun getNormalCustomers(): PagingSource<Int, Customer> =
         customerDao.getNormalCustomers()
 
-    override suspend fun getBadCustomers(): PagingSource<Int, Customer> =
+    override fun getBadCustomers(): PagingSource<Int, Customer> =
         customerDao.getBadCustomers()
 }

@@ -11,7 +11,7 @@ interface CustomerRepository {
 
     fun getSuperCustomers(): PagingSource<Int, Customer>
 
-    suspend fun getNormalCustomers(): PagingSource<Int, Customer>
+    fun getNormalCustomers(): PagingSource<Int, Customer>
 
-    suspend fun getBadCustomers(): PagingSource<Int, Customer>
+    fun getBadCustomers(): PagingSource<Int, Customer>
 }
