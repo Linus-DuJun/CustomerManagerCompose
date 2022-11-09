@@ -1,5 +1,6 @@
 package org.linus.du
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
@@ -58,41 +59,49 @@ fun HomeScreen(
                 },
                 modifier = Modifier.fillMaxWidth())
         },
-        drawerContent = {
-            Column(
-                modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(
-                    onClick = onBackup,
-                    modifier = Modifier.fillMaxWidth(1f).height(48.dp).padding(horizontal = 8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Ocean300,
-                        contentColor = Color.White),
-                    elevation = ButtonDefaults.elevation(
-                        defaultElevation = 4.dp,
-                        pressedElevation = 6.dp,
-                        disabledElevation = 4.dp,
-                        hoveredElevation = 6.dp,
-                        focusedElevation = 6.dp),
-                    shape = RoundedCornerShape(4.dp),
-                ) {
-                    Text(text = stringResource(id = R.string.backup_title))
-                }
-            }
-        }
+        drawerContent = { DrawerView(onBackup = onBackup) }
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
             com.google.accompanist.navigation.material.ModalBottomSheetLayout(bottomSheetNavigator) {
                 AppNavigation(
                     navController = navController,
                     onAddCustomer = onAddCustomer,
+                    onShowBottomSheet = {
+                                        Log.i("dujun", "name is ${it.name}")
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun DrawerView(
+    onBackup: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxHeight(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = onBackup,
+            modifier = Modifier.fillMaxWidth(1f).height(48.dp).padding(horizontal = 8.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Ocean300,
+                contentColor = Color.White),
+            elevation = ButtonDefaults.elevation(
+                defaultElevation = 4.dp,
+                pressedElevation = 6.dp,
+                disabledElevation = 4.dp,
+                hoveredElevation = 6.dp,
+                focusedElevation = 6.dp),
+            shape = RoundedCornerShape(4.dp),
+        ) {
+            Text(text = stringResource(id = R.string.backup_title))
         }
     }
 }

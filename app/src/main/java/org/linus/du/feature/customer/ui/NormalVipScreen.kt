@@ -17,6 +17,7 @@ import com.google.accompanist.insets.ui.TopAppBar
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.common.AddCustomerButton
 import org.linus.core.ui.common.RefreshButton
 import org.linus.core.utils.extension.Layout
@@ -28,7 +29,8 @@ import org.linus.du.feature.customer.ui.normal_vip.NormalVipViewModel
 fun NormalVipScreen(
     viewModel: NormalVipViewModel = hiltViewModel(),
     refresh: () ->Unit,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onShowBottomSheet: (Customer) -> Unit,
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(

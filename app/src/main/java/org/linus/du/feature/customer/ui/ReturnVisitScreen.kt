@@ -21,6 +21,7 @@ import com.google.accompanist.insets.ui.TopAppBar
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import org.linus.core.data.db.entities.Customer
 import org.linus.core.data.db.entities.ReturnVisitEntity
 import org.linus.core.ui.common.AddCustomerButton
 import org.linus.core.ui.common.LoadingView

@@ -42,7 +42,8 @@ fun SuperVipScreen(
     viewModel: SuperVipViewModel = hiltViewModel(),
     refresh: () -> Unit,
     onCheckCustomerDetailInfo: () -> Unit,
-    onAddCustomer: () -> Unit
+    onAddCustomer: () -> Unit,
+    onShowBottomSheet: (Customer) -> Unit
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -59,9 +60,13 @@ fun SuperVipScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 72.dp)
+                .padding(vertical = 56.dp)
         ) {
-            SuperVipContentView(viewModel = viewModel, onCheckCustomerDetailInfo = onCheckCustomerDetailInfo)
+            SuperVipContentView(
+                viewModel = viewModel,
+                onCheckCustomerDetailInfo = onCheckCustomerDetailInfo,
+                onShowBottomSheet = onShowBottomSheet
+            )
         }
     }
 }
@@ -70,14 +75,19 @@ fun SuperVipScreen(
 private fun SuperVipContentView(
     viewModel: SuperVipViewModel,
     onCheckCustomerDetailInfo: () -> Unit,
+    onShowBottomSheet: (Customer) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val superCustomers = viewModel.superCustomers.collectAsLazyPagingItems()
     LazyColumn(
-        modifier = Modifier.bodyWidth()
+        modifier = Modifier.bodyWidth().padding(start = 16.dp)
     ) {
         items(items = superCustomers) { customer ->
-            SuperViewItemView(sv = "Super VIP ${customer!!.name}", onCheckCustomerDetailInfo = onCheckCustomerDetailInfo)
+            SuperViewItemView(
+                customer = customer!!,
+                onCheckCustomerDetailInfo = onCheckCustomerDetailInfo,
+                onShowBottomSheet = onShowBottomSheet
+            )
         }
         superCustomers.apply {
             when {
@@ -132,8 +142,9 @@ fun ErrorItem(
 
 @Composable
 private fun SuperViewItemView(
+    customer: Customer,
     onCheckCustomerDetailInfo: () -> Unit,
-    sv: String
+    onShowBottomSheet: (Customer) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -141,7 +152,6 @@ private fun SuperViewItemView(
             .height(56.dp)
             .clickable {
                 onCheckCustomerDetailInfo.invoke()
-                Log.i("dujun", "check customer info")
             },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
@@ -160,15 +170,15 @@ private fun SuperViewItemView(
             verticalArrangement = Arrangement.Center
         ) {
             Row {
-                Text(sv, style = MaterialTheme.typography.body1)
+                Text(customer.name, style = MaterialTheme.typography.body1)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("32岁", style = MaterialTheme.typography.body1)
             }
-            Text("1776280217", style = MaterialTheme.typography.body2)
+            Text(customer.id, style = MaterialTheme.typography.body2)
         }
         Spacer(modifier = Modifier.padding(8.dp))
         IconButton(
-            onClick = { Log.i("dujun", "show bottom sheet") }
+            onClick = { onShowBottomSheet(customer) }
         ) {
             Icon(
                 imageVector = Icons.Default.Menu,
