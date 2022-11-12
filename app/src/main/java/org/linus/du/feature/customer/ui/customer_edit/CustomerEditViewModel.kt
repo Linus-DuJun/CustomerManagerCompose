@@ -144,30 +144,32 @@ class CustomerEditViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             val state = screenState.value
             customerRepository.addCustomer(state.customer!!)
-            val record = Subject(
-                id = UUID.randomUUID().toString(),
-                customerName = state.customer.name,
-                customerPhone = state.customer.id,
-                subject = state.record,
-                time = System.currentTimeMillis(),
-                humanReadableTime = getHumanReadableDate(),
-                description = state.recordDesc
-            )
-            recordRepository.addRecord(record)
-            if (state.returnVisitItems.isNotEmpty()) {
-                state.returnVisitItems.map {
-                    ReturnVisitEntity(
-                        id = it.id,
-                        customerName = state.customer.name,
-                        customerPhone = state.customer.id,
-                        recordId = record.id,
-                        recordTitle = record.subject,
-                        rvTitle = it.title,
-                        rvTime = it.timeStamp,
-                        humanReadableTime = it.humanReadableTime
-                    )
-                }.also {
-                    returnVisitRepository.addReturnVisitItems(it)
+            if (state.record.isNotEmpty()) {
+                val record = Subject(
+                    id = UUID.randomUUID().toString(),
+                    customerName = state.customer.name,
+                    customerPhone = state.customer.id,
+                    subject = state.record,
+                    time = System.currentTimeMillis(),
+                    humanReadableTime = getHumanReadableDate(),
+                    description = state.recordDesc
+                )
+                recordRepository.addRecord(record)
+                if (state.returnVisitItems.isNotEmpty()) {
+                    state.returnVisitItems.map {
+                        ReturnVisitEntity(
+                            id = it.id,
+                            customerName = state.customer.name,
+                            customerPhone = state.customer.id,
+                            recordId = record.id,
+                            recordTitle = record.subject,
+                            rvTitle = it.title,
+                            rvTime = it.timeStamp,
+                            humanReadableTime = it.humanReadableTime
+                        )
+                    }.also {
+                        returnVisitRepository.addReturnVisitItems(it)
+                    }
                 }
             }
             toaster.showToast("操作已成功完成")
