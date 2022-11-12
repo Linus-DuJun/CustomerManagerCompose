@@ -32,7 +32,7 @@ fun CustomerInfoScreen(
             onBackClick = onBackClick
         ) }
     ) {
-        if (customer.value != null && records.value.isNotEmpty()) {
+        if (records.value.isNotEmpty()) {
             RecordListView(records = records.value)
         } else {
             AnimatedLoadingView(visible = true)
