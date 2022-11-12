@@ -3,6 +3,7 @@ package org.linus.du.feature.backup.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +28,8 @@ import org.linus.du.R
 
 @AndroidEntryPoint
 class BackupActivity : ComponentActivity() {
+
+    val viewModel: BackupViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +50,10 @@ class BackupActivity : ComponentActivity() {
                     onBackClick = { finish() })
                 }
             ) {
+                val state = viewModel.screenState.collectAsState()
+                if (state.value.exportSuccess || state.value.importSuccess) {
+                    finish()
+                }
                 BackupContentView(viewModel = hiltViewModel())
             }
         }

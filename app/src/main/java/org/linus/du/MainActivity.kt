@@ -16,6 +16,8 @@ import org.linus.core.ui.theme.*
 import org.linus.core.utils.toast.Toaster
 import org.linus.du.feature.backup.ui.BackupActivity
 import org.linus.du.feature.customer.ui.add_customer.AddCustomerActivity
+import org.linus.du.feature.customer.ui.custom_info.CustomerInfoActivity
+import org.linus.du.feature.customer.ui.customer_edit.CustomerEditActivity
 import javax.inject.Inject
 
 @Composable
@@ -61,6 +63,20 @@ class MainActivity : ComponentActivity() {
                   },
                   onBackup = {
                         startActivity(Intent(this@MainActivity, BackupActivity::class.java))
+                  },
+                  onCheckCustomerInfo = {
+                      Intent(this@MainActivity, CustomerInfoActivity::class.java).apply {
+                          putExtra("id", it.id)
+                      }.let {
+                          startActivity(it)
+                      }
+                  },
+                  onEditCustomer = {
+                      Intent(this@MainActivity, CustomerEditActivity::class.java).apply {
+                          putExtra("id", it.id)
+                      }.let {
+                          startActivity(it)
+                      }
                   }
               )
             }

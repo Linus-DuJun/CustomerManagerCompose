@@ -35,7 +35,7 @@ import org.linus.du.feature.customer.ui.normal_vip.NormalVipViewModel
 fun NormalVipScreen(
     viewModel: NormalVipViewModel = hiltViewModel(),
     refresh: () ->Unit,
-    onCheckCustomerDetailInfo: () -> Unit,
+    onCheckCustomerDetailInfo: (Customer) -> Unit,
     onAddCustomer: () -> Unit,
     onShowBottomSheet: (Customer) -> Unit,
 ) {
@@ -68,12 +68,14 @@ fun NormalVipScreen(
 @Composable
 private fun NormalCustomerContentView(
     viewModel: NormalVipViewModel,
-    onCheckCustomerDetailInfo: () -> Unit,
+    onCheckCustomerDetailInfo: (Customer) -> Unit,
     onShowBottomSheet: (Customer) -> Unit
 ) {
     val superCustomers = viewModel.normalCustomers.collectAsLazyPagingItems()
     LazyColumn(
-        modifier = Modifier.bodyWidth().padding(start = 16.dp)
+        modifier = Modifier
+            .bodyWidth()
+            .padding(start = 16.dp)
     ) {
         items(items = superCustomers) { customer ->
             NormalCustomerItemView(
@@ -111,7 +113,7 @@ private fun NormalCustomerContentView(
 @Composable
 private fun NormalCustomerItemView(
     customer: Customer,
-    onCheckCustomerDetailInfo: () -> Unit,
+    onCheckCustomerDetailInfo: (Customer) -> Unit,
     onShowBottomSheet: (Customer) -> Unit
 ) {
     Row(
@@ -119,7 +121,7 @@ private fun NormalCustomerItemView(
             .fillMaxWidth()
             .height(56.dp)
             .clickable {
-                onCheckCustomerDetailInfo.invoke()
+                onCheckCustomerDetailInfo.invoke(customer)
             },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
@@ -148,7 +150,7 @@ private fun NormalCustomerItemView(
             onClick = { onShowBottomSheet(customer) }
         ) {
             Icon(
-                imageVector = Icons.Default.Menu,
+                painter = painterResource(id = R.drawable.ic_edit),
                 contentDescription = null,
                 tint = Gray300
             )

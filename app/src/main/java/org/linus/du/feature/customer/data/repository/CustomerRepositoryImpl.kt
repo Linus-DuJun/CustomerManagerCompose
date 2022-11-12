@@ -14,6 +14,10 @@ class CustomerRepositoryImpl @Inject constructor(
         customerDao.insert(customer)
     }
 
+    override suspend fun addCustomers(customers: List<Customer>) {
+        customerDao.insert(customers)
+    }
+
     override suspend fun updateCustomerLevel(phone: String, level: Int) {
         customerDao.updateCustomerLevel(phone = phone, level = level)
     }

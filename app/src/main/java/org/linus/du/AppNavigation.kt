@@ -27,7 +27,7 @@ private sealed class LeafScreen(
     object NormalVip: LeafScreen("normal_vip")
     object BadCustomer: LeafScreen("bad_customer")
     object ShowCustomerDetails : LeafScreen("show/{customerId}") {
-        fun createRoute(root: Screen, customerId: Int): String {
+        fun createRoute(root: Screen, customerId: String): String {
             return "${root.route}/show/$customerId"
         }
     }
@@ -41,6 +41,7 @@ private sealed class LeafScreen(
 internal fun AppNavigation(
     navController: NavHostController,
     onAddCustomer: () -> Unit,
+    onCheckCustomerInfo: (Customer) -> Unit,
     onShowBottomSheet: (Customer) -> Unit,
     modifier: Modifier
 ) {
@@ -54,9 +55,9 @@ internal fun AppNavigation(
         modifier = modifier
     ) {
         addReturnVisitTopLevel(navController, onAddCustomer = onAddCustomer)
-        addSuperVipTopLevel(navController, onAddCustomer = onAddCustomer, onShowBottomSheet = onShowBottomSheet)
-        addNormalVipTopLevel(navController, onAddCustomer = onAddCustomer, onShowBottomSheet = onShowBottomSheet)
-        addBadCustomerTopLevel(navController, onAddCustomer = onAddCustomer, onShowBottomSheet = onShowBottomSheet)
+        addSuperVipTopLevel(navController, onAddCustomer = onAddCustomer,  onCheckCustomerInfo = onCheckCustomerInfo, onShowBottomSheet = onShowBottomSheet)
+        addNormalVipTopLevel(navController, onAddCustomer = onAddCustomer, onCheckCustomerInfo = onCheckCustomerInfo, onShowBottomSheet = onShowBottomSheet)
+        addBadCustomerTopLevel(navController, onAddCustomer = onAddCustomer, onCheckCustomerInfo = onCheckCustomerInfo, onShowBottomSheet = onShowBottomSheet)
     }
 }
 
@@ -65,12 +66,18 @@ private fun NavGraphBuilder.addBadCustomerTopLevel(
     navController: NavController,
     onAddCustomer: () -> Unit,
     onShowBottomSheet: (Customer) -> Unit,
+    onCheckCustomerInfo: (Customer) -> Unit,
 ) {
     navigation(
         route = Screen.BadCustomer.route,
         startDestination =  LeafScreen.BadCustomer.createRoute(Screen.BadCustomer)
     ) {
-        addBadCustomerScreen(navController, Screen.BadCustomer, onAddCustomer = onAddCustomer, onShowBottomSheet = onShowBottomSheet)
+        addBadCustomerScreen(navController, Screen.BadCustomer,
+            onAddCustomer = onAddCustomer,
+            onShowBottomSheet = onShowBottomSheet,
+            onCheckCustomerInfo = onCheckCustomerInfo
+        )
+        addCustomerDetailScreen(navController, root = Screen.BadCustomer)
     }
 }
 
@@ -78,6 +85,7 @@ private fun NavGraphBuilder.addBadCustomerTopLevel(
 private fun NavGraphBuilder.addNormalVipTopLevel(
     navController: NavController,
     onAddCustomer: () -> Unit,
+    onCheckCustomerInfo: (Customer) -> Unit,
     onShowBottomSheet: (Customer) -> Unit,
 ) {
     navigation(
@@ -88,6 +96,7 @@ private fun NavGraphBuilder.addNormalVipTopLevel(
             navController,
             Screen.NormalVip,
             onAddCustomer = onAddCustomer,
+            onCheckCustomerInfo = onCheckCustomerInfo,
             onShowBottomSheet = onShowBottomSheet
         )
         addCustomerDetailScreen(navController, root = Screen.NormalVip)
@@ -98,13 +107,17 @@ private fun NavGraphBuilder.addNormalVipTopLevel(
 private fun NavGraphBuilder.addSuperVipTopLevel(
     navController: NavController,
     onAddCustomer: () -> Unit,
+    onCheckCustomerInfo: (Customer) -> Unit,
     onShowBottomSheet: (Customer) -> Unit
 ) {
     navigation(
         route = Screen.SuperVip.route,
         startDestination = LeafScreen.SuperVip.createRoute(Screen.SuperVip)
     ) {
-        addSuperVipScreen(navController, root = Screen.SuperVip, onAddCustomer = onAddCustomer, onShowBottomSheet = onShowBottomSheet)
+        addSuperVipScreen(navController, root = Screen.SuperVip,
+            onAddCustomer = onAddCustomer,
+            onCheckCustomerInfo = onCheckCustomerInfo,
+            onShowBottomSheet = onShowBottomSheet)
         addCustomerDetailScreen(navController, root = Screen.SuperVip)
     }
 }
@@ -147,6 +160,7 @@ private fun NavGraphBuilder.addReturnVisitScreen(
 private fun NavGraphBuilder.addSuperVipScreen(
     navController: NavController,
     onAddCustomer: () -> Unit,
+    onCheckCustomerInfo: (Customer) -> Unit,
     onShowBottomSheet: (Customer) -> Unit,
     root: Screen
 ) {
@@ -155,9 +169,7 @@ private fun NavGraphBuilder.addSuperVipScreen(
     ) {
         SuperVipScreen(
             refresh = { "refreshing" },
-            onCheckCustomerDetailInfo = {
-                navController.navigate(LeafScreen.ShowCustomerDetails.createRoute(root, 56))
-            },
+            onCheckCustomerDetailInfo = onCheckCustomerInfo,
             onAddCustomer = onAddCustomer,
             onShowBottomSheet = onShowBottomSheet
         )
@@ -170,7 +182,7 @@ private fun NavGraphBuilder.addCustomerDetailScreen(
     root: Screen
 ) {
     composable(
-        route = LeafScreen.ShowCustomerDetails.createRoute(root, 56)
+        route = LeafScreen.ShowCustomerDetails.createRoute(root, "56")
     ) {
         CustomerDetailInfoScreen()
     }
@@ -181,6 +193,7 @@ private fun NavGraphBuilder.addNormalVipScreen(
     navController: NavController,
     root: Screen,
     onAddCustomer: () -> Unit,
+    onCheckCustomerInfo: (Customer) -> Unit,
     onShowBottomSheet: (Customer) -> Unit,
 ) {
     composable(
@@ -189,9 +202,7 @@ private fun NavGraphBuilder.addNormalVipScreen(
         NormalVipScreen(
             refresh = { "refreshing" },
             onAddCustomer = onAddCustomer,
-            onCheckCustomerDetailInfo = {
-                navController.navigate(LeafScreen.ShowCustomerDetails.createRoute(root, 56))
-            },
+            onCheckCustomerDetailInfo = onCheckCustomerInfo,
             onShowBottomSheet = onShowBottomSheet
         )
     }
@@ -202,7 +213,8 @@ private fun NavGraphBuilder.addBadCustomerScreen(
     navController: NavController,
     root: Screen,
     onAddCustomer: () -> Unit,
-    onShowBottomSheet: (Customer) -> Unit,
+    onCheckCustomerInfo: (Customer) -> Unit,
+    onShowBottomSheet: (Customer) -> Unit
 ) {
     composable(
         route = LeafScreen.BadCustomer.createRoute(root)
@@ -210,7 +222,8 @@ private fun NavGraphBuilder.addBadCustomerScreen(
         BadCustomerScreen(
             refresh = { "refreshing" },
             onAddCustomer = onAddCustomer,
-            onShowBottomSheet = onShowBottomSheet
+            onShowBottomSheet = onShowBottomSheet,
+            onCheckCustomerDetailInfo = onCheckCustomerInfo
         )
     }
 }

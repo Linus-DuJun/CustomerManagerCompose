@@ -1,19 +1,13 @@
 package org.linus.du.feature.customer.ui
 
-import android.util.Log
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,17 +17,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.google.accompanist.insets.ui.Scaffold
 import com.google.accompanist.insets.ui.TopAppBar
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.common.AddCustomerButton
 import org.linus.core.ui.common.ErrorItem
 import org.linus.core.ui.common.LoadingView
-import org.linus.core.ui.common.RefreshButton
 import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Green
-import org.linus.core.utils.extension.Layout
 import org.linus.core.utils.extension.bodyWidth
 import org.linus.du.R
 import org.linus.du.feature.customer.ui.super_vip.SuperVipViewModel
@@ -42,7 +31,7 @@ import org.linus.du.feature.customer.ui.super_vip.SuperVipViewModel
 fun SuperVipScreen(
     viewModel: SuperVipViewModel = hiltViewModel(),
     refresh: () -> Unit,
-    onCheckCustomerDetailInfo: () -> Unit,
+    onCheckCustomerDetailInfo: (Customer) -> Unit,
     onAddCustomer: () -> Unit,
     onShowBottomSheet: (Customer) -> Unit
 ) {
@@ -75,13 +64,15 @@ fun SuperVipScreen(
 @Composable
 private fun SuperVipContentView(
     viewModel: SuperVipViewModel,
-    onCheckCustomerDetailInfo: () -> Unit,
+    onCheckCustomerDetailInfo: (Customer) -> Unit,
     onShowBottomSheet: (Customer) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val superCustomers = viewModel.superCustomers.collectAsLazyPagingItems()
     LazyColumn(
-        modifier = Modifier.bodyWidth().padding(start = 16.dp)
+        modifier = Modifier
+            .bodyWidth()
+            .padding(start = 16.dp)
     ) {
         items(items = superCustomers) { customer ->
             SuperViewItemView(
@@ -120,7 +111,7 @@ private fun SuperVipContentView(
 @Composable
 private fun SuperViewItemView(
     customer: Customer,
-    onCheckCustomerDetailInfo: () -> Unit,
+    onCheckCustomerDetailInfo: (Customer) -> Unit,
     onShowBottomSheet: (Customer) -> Unit
 ) {
     Row(
@@ -128,7 +119,7 @@ private fun SuperViewItemView(
             .fillMaxWidth()
             .height(56.dp)
             .clickable {
-                onCheckCustomerDetailInfo.invoke()
+                onCheckCustomerDetailInfo.invoke(customer)
             },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
@@ -158,7 +149,7 @@ private fun SuperViewItemView(
             onClick = { onShowBottomSheet(customer) }
         ) {
             Icon(
-                imageVector = Icons.Default.Menu,
+                painter = painterResource(id = R.drawable.ic_edit),
                 contentDescription = null,
                 tint = Gray300
             )

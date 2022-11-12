@@ -7,6 +7,8 @@ interface CustomerRepository {
 
     suspend fun addCustomer(customer: Customer)
 
+    suspend fun addCustomers(customers: List<Customer>)
+
     suspend fun updateCustomerLevel(phone: String, level: Int)
 
     fun getSuperCustomers(): PagingSource<Int, Customer>

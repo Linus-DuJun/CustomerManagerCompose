@@ -33,12 +33,15 @@ import com.google.accompanist.insets.ui.BottomNavigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.theme.Ocean300
 
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreen(
     onAddCustomer: () -> Unit,
+    onEditCustomer: (Customer) -> Unit,
+    onCheckCustomerInfo: (Customer) -> Unit,
     onBackup: () -> Unit,
 ) {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
@@ -66,9 +69,8 @@ fun HomeScreen(
                 AppNavigation(
                     navController = navController,
                     onAddCustomer = onAddCustomer,
-                    onShowBottomSheet = {
-                                        Log.i("dujun", "name is ${it.name}")
-                    },
+                    onShowBottomSheet = onEditCustomer,
+                    onCheckCustomerInfo = onCheckCustomerInfo,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()

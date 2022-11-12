@@ -35,6 +35,12 @@
         <activity android:name=".feature.backup.ui.BackupActivity"
             android:launchMode="singleTop" />
 
+        <activity android:name=".feature.customer.ui.custom_info.CustomerInfoActivity"
+            android:launchMode="singleTop" />
+
+        <activity android:name=".feature.customer.ui.customer_edit.CustomerEditActivity"
+            android:launchMode="singleTop" />
+
     </application>
 
 </manifest>
