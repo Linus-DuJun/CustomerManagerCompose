@@ -118,7 +118,9 @@ private fun ReturnVisitItemView(item: ReturnVisitEntity) {
             Row {
                 Text("${item.customerName}", style = MaterialTheme.typography.body1)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("${item.humanReadableTime}", style = MaterialTheme.typography.body1)
+                Text(item.customerPhone, style = MaterialTheme.typography.body1)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(item.humanReadableTime.substring(6), style = MaterialTheme.typography.body1)
             }
             Text("${item.rvTitle}", style = MaterialTheme.typography.body2)
         }

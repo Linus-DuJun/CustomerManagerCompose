@@ -69,42 +69,42 @@ class BackupViewModel @Inject constructor(
     }
 
     private fun importData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            for (i in 1 .. 11) {
-                val customers = mutableListOf<Customer>()
-                for (j in 1 .. 1000) {
-                    customers.add(Customer(
-                        id = "1380807975$j",
-                        name = "super vip $j",
-                        type = 3
-                    ))
-                }
-                customerRepository.addCustomers(customers)
-            }
-            for (isec in 1 .. 11) {
-                val customers = mutableListOf<Customer>()
-                for (jo in 1 .. 1000) {
-                    customers.add(Customer(
-                        id = "1776128021$jo",
-                        name = "normal vip $jo",
-                        type = 2
-                    ))
-                }
-                customerRepository.addCustomers(customers)
-            }
-            for (ithi in 1 .. 11) {
-                val customers = mutableListOf<Customer>()
-                for (k in 1 .. 1000) {
-                    customers.add(Customer(
-                        id = "1776128021$k",
-                        name = "bad customer $k",
-                        type = 1
-                    ))
-                }
-                customerRepository.addCustomers(customers)
-            }
-            obtainEvent(BackupScreenEvent.ImportDataEventSuccess)
-        }
+//        viewModelScope.launch(Dispatchers.IO) {
+//            for (i in 1 .. 11) {
+//                val customers = mutableListOf<Customer>()
+//                for (j in 1 .. 1000) {
+//                    customers.add(Customer(
+//                        id = "1380807975$j",
+//                        name = "super vip $j",
+//                        type = 3
+//                    ))
+//                }
+//                customerRepository.addCustomers(customers)
+//            }
+//            for (isec in 1 .. 11) {
+//                val customers = mutableListOf<Customer>()
+//                for (jo in 1 .. 1000) {
+//                    customers.add(Customer(
+//                        id = "1776128021$jo",
+//                        name = "normal vip $jo",
+//                        type = 2
+//                    ))
+//                }
+//                customerRepository.addCustomers(customers)
+//            }
+//            for (ithi in 1 .. 11) {
+//                val customers = mutableListOf<Customer>()
+//                for (k in 1 .. 1000) {
+//                    customers.add(Customer(
+//                        id = "1776128021$k",
+//                        name = "bad customer $k",
+//                        type = 1
+//                    ))
+//                }
+//                customerRepository.addCustomers(customers)
+//            }
+//            obtainEvent(BackupScreenEvent.ImportDataEventSuccess)
+//        }
     }
 
     private fun generateCustomerFile(): File {

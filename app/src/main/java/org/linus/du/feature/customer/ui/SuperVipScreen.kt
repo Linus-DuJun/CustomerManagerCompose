@@ -140,7 +140,7 @@ private fun SuperViewItemView(
             Row {
                 Text(customer.name, style = MaterialTheme.typography.body1)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("32岁", style = MaterialTheme.typography.body1)
+//                Text("32岁", style = MaterialTheme.typography.body1)
             }
             Text(customer.id, style = MaterialTheme.typography.body2)
         }
