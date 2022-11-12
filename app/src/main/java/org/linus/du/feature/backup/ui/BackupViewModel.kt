@@ -1,6 +1,7 @@
 package org.linus.du.feature.backup.ui
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,9 +10,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.linus.core.data.db.entities.Customer
+import org.linus.core.utils.extension.getHumanReadableDate
 import org.linus.core.utils.toast.Toaster
 import org.linus.du.feature.backup.domain.repository.BackupRepository
 import org.linus.du.feature.customer.domain.repository.CustomerRepository
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,6 +26,12 @@ class BackupViewModel @Inject constructor(
 
     private val _screenState = MutableStateFlow(BackupScreenStateHolder())
     val screenState = _screenState.asStateFlow()
+    private val _storagePath = MutableLiveData<File>()
+
+
+    fun setStoragePath(path: File) {
+        _storagePath.value = path
+    }
 
     fun obtainEvent(event: BackupScreenEvent) {
         reduce(event, _screenState.value)
@@ -41,11 +50,22 @@ class BackupViewModel @Inject constructor(
             BackupScreenEvent.ImportDataEventSuccess -> {
                 _screenState.value = currentState.copy(isImporting = false)
             }
+            BackupScreenEvent.ExportDataEventSuccess -> {
+                _screenState.value = currentState.copy(isExporting = false)
+            }
         }
     }
 
     private fun exportData() {
-        Log.i("dujun", "export data")
+        viewModelScope.launch(Dispatchers.IO) {
+            val customerFile: File = generateCustomerFile()
+            val subjectFile: File = generateSubjectFile()
+            val returnVisitFile: File = generateReturnVisitFile()
+
+            Log.i("dujun", "file dir: ${customerFile.absoluteFile}")
+            toaster.showToast("导出成功")
+            obtainEvent(BackupScreenEvent.ExportDataEventSuccess)
+        }
     }
 
     private fun importData() {
@@ -86,4 +106,21 @@ class BackupViewModel @Inject constructor(
             obtainEvent(BackupScreenEvent.ImportDataEventSuccess)
         }
     }
+
+    private fun generateCustomerFile(): File {
+        return File(_storagePath.value, getCustomerCSVFileName())
+    }
+
+    private fun generateSubjectFile(): File {
+        return File(_storagePath.value, getSubjectCSVFileName())
+    }
+
+    private fun generateReturnVisitFile(): File {
+        return File(_storagePath.value, getReturnVisitCSVFileName())
+    }
+
+
+    private fun getCustomerCSVFileName(): String = "Customer_${getHumanReadableDate()}.csv"
+    private fun getSubjectCSVFileName(): String = "Subject_${getHumanReadableDate()}.csv"
+    private fun getReturnVisitCSVFileName() = "ReturnVisit_${getHumanReadableDate()}.csv"
 }

@@ -33,7 +33,7 @@ class BackupActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        viewModel.setStoragePath(this.filesDir)
         setContent {
             val systemUiController = rememberSystemUiController()
             val isDarkMode = isSystemInDarkTheme()
@@ -52,7 +52,7 @@ class BackupActivity : ComponentActivity() {
             ) {
                 val state = viewModel.screenState.collectAsState()
                 if (state.value.exportSuccess || state.value.importSuccess) {
-                    finish()
+                    this@BackupActivity.finish()
                 }
                 BackupContentView(viewModel = hiltViewModel())
             }
