@@ -11,7 +11,7 @@ abstract class CustomerDao : BaseDao<Customer>() {
     abstract fun getAll(): Flow<List<Customer>>
 
     @Query("SELECT * FROM customer WHERE id = :id")
-    abstract fun getCustomerById(id: Int): Flow<Customer>
+    abstract fun getCustomerById(id: String): Flow<Customer>
 
     @Query("SELECT * FROM customer WHERE type = 3")
     abstract fun getSuperCustomers(): PagingSource<Int, Customer>

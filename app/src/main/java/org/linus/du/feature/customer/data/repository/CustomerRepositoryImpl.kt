@@ -1,6 +1,7 @@
 package org.linus.du.feature.customer.data.repository
 
 import androidx.paging.PagingSource
+import kotlinx.coroutines.flow.Flow
 import org.linus.core.data.db.dao.CustomerDao
 import org.linus.core.data.db.entities.Customer
 import org.linus.du.feature.customer.domain.repository.CustomerRepository
@@ -20,6 +21,10 @@ class CustomerRepositoryImpl @Inject constructor(
 
     override suspend fun updateCustomerLevel(phone: String, level: Int) {
         customerDao.updateCustomerLevel(phone = phone, level = level)
+    }
+
+    override suspend fun getCustomer(id: String): Flow<Customer> {
+        return customerDao.getCustomerById(id)
     }
 
     override fun getSuperCustomers(): PagingSource<Int, Customer> =

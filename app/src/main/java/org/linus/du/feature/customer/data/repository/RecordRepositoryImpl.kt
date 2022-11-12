@@ -1,7 +1,6 @@
 package org.linus.du.feature.customer.data.repository
 
 import kotlinx.coroutines.flow.Flow
-import org.linus.core.data.db.dao.SimpleSubject
 import org.linus.core.data.db.dao.SubjectDao
 import org.linus.core.data.db.entities.Subject
 import org.linus.du.feature.customer.domain.repository.RecordRepository
@@ -15,6 +14,6 @@ class RecordRepositoryImpl @Inject constructor(
         subjectDao.insert(record)
     }
 
-    override suspend fun getRecordByCustomer(phone: String): Flow<List<SimpleSubject>> =
+    override suspend fun getRecordByCustomer(phone: String): Flow<List<Subject>> =
         subjectDao.getSubjectsByUser(phone)
 }
