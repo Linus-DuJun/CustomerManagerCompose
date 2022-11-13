@@ -16,4 +16,8 @@ class ReturnVisitRepositoryImpl @Inject constructor(
     override suspend fun getReturnVisitItems(): Flow<List<ReturnVisitEntity>> {
         return dao.getReturnVisit(System.currentTimeMillis() - 24 * 60 * 60 * 1000)
     }
+
+    override suspend fun deleteReturnVisit(rv: ReturnVisitEntity) {
+        dao.delete(rv)
+    }
 }

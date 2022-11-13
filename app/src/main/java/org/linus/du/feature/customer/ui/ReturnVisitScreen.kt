@@ -1,11 +1,12 @@
 package org.linus.du.feature.customer.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -18,14 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.ui.Scaffold
 import com.google.accompanist.insets.ui.TopAppBar
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import org.linus.core.data.db.entities.Customer
 import org.linus.core.data.db.entities.ReturnVisitEntity
 import org.linus.core.ui.common.AddCustomerButton
 import org.linus.core.ui.common.LoadingView
 import org.linus.core.ui.theme.*
+import org.linus.core.utils.extension.getReadableDateByTime
 import org.linus.du.R
 import org.linus.du.feature.customer.ui.return_visit.ReturnVisitViewModel
 
@@ -55,7 +53,8 @@ fun ReturnVisitScreen(
                 EmptyView()
             } else {
                 ReturnVisitListView(
-                    items = screenState.value.items
+                    items = screenState.value.items,
+                    delete = { viewModel.deleteReturnVisit(it) }
                 )
             }
         }
@@ -65,12 +64,13 @@ fun ReturnVisitScreen(
 @Composable
 private fun ReturnVisitListView(
     items: List<ReturnVisitEntity>,
+    delete: (ReturnVisitEntity) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.padding(vertical = 56.dp)
     ) {
         items(items = items) { item ->
-            ReturnVisitItemView(item = item)
+            ReturnVisitItemView(item = item, delete = delete)
             Divider(color = Gray200)
         }
     }
@@ -89,13 +89,12 @@ private fun EmptyView() {
 }
 
 @Composable
-private fun ReturnVisitItemView(item: ReturnVisitEntity) {
-    val isToday = item.rvTime < System.currentTimeMillis()
+private fun ReturnVisitItemView(
+    item: ReturnVisitEntity,
+    delete: (ReturnVisitEntity) -> Unit
+) {
     Row(
         modifier = Modifier
-            .background(
-                if (isToday) Red200 else MaterialTheme.colors.background
-            )
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .height(56.dp),
@@ -105,7 +104,7 @@ private fun ReturnVisitItemView(item: ReturnVisitEntity) {
         Icon(
             painter = painterResource(id = R.drawable.ic_date_picker),
             contentDescription = null,
-            tint = if (isToday) Purple700 else Green,
+            tint = if (item.customerType == 1) Red500 else Green,
             modifier = Modifier.size(width = 22.dp, height = 24.dp)
         )
         Spacer(modifier = Modifier.padding(8.dp))
@@ -116,13 +115,19 @@ private fun ReturnVisitItemView(item: ReturnVisitEntity) {
             verticalArrangement = Arrangement.Center
         ) {
             Row {
-                Text("${item.customerName}", style = MaterialTheme.typography.body1)
+                Text(item.customerName, style = MaterialTheme.typography.body1)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(item.customerPhone, style = MaterialTheme.typography.body1)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(item.humanReadableTime.substring(6), style = MaterialTheme.typography.body1)
+                Text(getReadableDateByTime(item.rvTime), style = MaterialTheme.typography.body1)
             }
             Text("${item.rvTitle}", style = MaterialTheme.typography.body2)
+        }
+        IconButton(onClick = { delete.invoke(item) }) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = null
+            )
         }
     }
 }

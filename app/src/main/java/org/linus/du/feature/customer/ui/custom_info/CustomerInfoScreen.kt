@@ -2,9 +2,7 @@ package org.linus.du.feature.customer.ui.custom_info
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -17,6 +15,7 @@ import org.linus.core.data.db.entities.Customer
 import org.linus.core.data.db.entities.Subject
 import org.linus.core.ui.common.AnimatedLoadingView
 import org.linus.core.ui.common.BaseTopAppBar
+import org.linus.core.utils.extension.getReadableDateByTime
 
 
 @Composable
@@ -98,7 +97,7 @@ private fun RecordItemView(index: Int, record: Subject) {
             ) {
                 Text(text = record.subject, style = MaterialTheme.typography.body1)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = record.humanReadableTime, style = MaterialTheme.typography.body1)
+                Text(text = getReadableDateByTime(record.time), style = MaterialTheme.typography.body1)
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(record.description, style = MaterialTheme.typography.body1)

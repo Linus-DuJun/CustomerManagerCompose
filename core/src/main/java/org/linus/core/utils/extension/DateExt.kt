@@ -1,6 +1,8 @@
 package org.linus.core.utils.extension
 
+import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 
@@ -15,6 +17,13 @@ fun dateFor(ld: LocalDate): Date {
 
 fun localDateFor(date: Date): LocalDate {
     return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+}
+
+fun getReadableDateByTime(timeStamp: Long): String {
+    val time = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp), TimeZone.getDefault().toZoneId())
+    val localDate = time.toLocalDate()
+    val month = localDate.month.value
+    return "${month}月${localDate.dayOfMonth}日"
 }
 
 fun getHumanReadableDate(): String {

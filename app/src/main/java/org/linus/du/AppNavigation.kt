@@ -184,7 +184,6 @@ private fun NavGraphBuilder.addCustomerDetailScreen(
     composable(
         route = LeafScreen.ShowCustomerDetails.createRoute(root, "56")
     ) {
-        CustomerDetailInfoScreen()
     }
 }
 

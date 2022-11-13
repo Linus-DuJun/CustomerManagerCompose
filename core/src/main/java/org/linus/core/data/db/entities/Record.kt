@@ -11,6 +11,5 @@ data class Subject(
     @ColumnInfo(name = "customer_phone") val customerPhone: String,
     val subject: String,
     val time: Long,
-    @ColumnInfo(name = "human_readable_time") val humanReadableTime: String,
     val description: String
 )
