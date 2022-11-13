@@ -1,5 +1,6 @@
 package org.linus.du.feature.customer.ui
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,10 +23,12 @@ import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.common.AddCustomerButton
 import org.linus.core.ui.common.ErrorItem
 import org.linus.core.ui.common.LoadingView
+import org.linus.core.ui.common.SearchButton
 import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Green
 import org.linus.core.utils.extension.bodyWidth
 import org.linus.du.R
+import org.linus.du.feature.customer.ui.search.SearchActivity
 import org.linus.du.feature.customer.ui.super_vip.SuperVipViewModel
 
 @Composable
@@ -164,6 +168,7 @@ private fun SuperVipAppBar(
     onRefreshActionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     TopAppBar(
         backgroundColor = MaterialTheme.colors.background.copy(
             alpha = 0.97f
@@ -182,6 +187,11 @@ private fun SuperVipAppBar(
 //                        RefreshButton(onClick = onRefreshActionClick)
 //                    }
 //                }
+                SearchButton(onClick = {
+                    Intent(context, SearchActivity::class.java).let {
+                        context.startActivity(it)
+                    }
+                })
                 AddCustomerButton(onClick = onAddCustomer)
             }
         }

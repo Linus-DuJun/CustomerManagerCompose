@@ -1,5 +1,6 @@
 package org.linus.du.feature.customer.ui
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +14,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -22,10 +24,12 @@ import com.google.accompanist.insets.ui.TopAppBar
 import org.linus.core.data.db.entities.ReturnVisitEntity
 import org.linus.core.ui.common.AddCustomerButton
 import org.linus.core.ui.common.LoadingView
+import org.linus.core.ui.common.SearchButton
 import org.linus.core.ui.theme.*
 import org.linus.core.utils.extension.getReadableDateByTime
 import org.linus.du.R
 import org.linus.du.feature.customer.ui.return_visit.ReturnVisitViewModel
+import org.linus.du.feature.customer.ui.search.SearchActivity
 
 @Composable
 fun ReturnVisitScreen(
@@ -139,6 +143,7 @@ private fun ReturnVisitAppBar(
     onRefreshActionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     TopAppBar(
         backgroundColor = MaterialTheme.colors.background.copy(
             alpha = 0.97f
@@ -157,6 +162,11 @@ private fun ReturnVisitAppBar(
 //                        RefreshButton(onClick = onRefreshActionClick)
 //                    }
 //                }
+                SearchButton(onClick = {
+                    Intent(context, SearchActivity::class.java).let {
+                        context.startActivity(it)
+                    }
+                })
                 AddCustomerButton(onClick = onAddCustomer)
             }
         }

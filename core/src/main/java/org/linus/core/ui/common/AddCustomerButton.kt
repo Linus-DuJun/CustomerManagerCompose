@@ -4,6 +4,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,6 +22,23 @@ fun AddCustomerButton(
         Icon(
             imageVector = Icons.Default.AddCircle,
             contentDescription =  stringResource(R.string.icon_desc_add_customer)
+        )
+    }
+}
+
+
+@Composable
+fun SearchButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription =  "查找"
         )
     }
 }

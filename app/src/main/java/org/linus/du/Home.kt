@@ -42,7 +42,7 @@ fun HomeScreen(
     onAddCustomer: () -> Unit,
     onEditCustomer: (Customer) -> Unit,
     onCheckCustomerInfo: (Customer) -> Unit,
-    onBackup: () -> Unit,
+    onBackup: () -> Unit
 ) {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberAnimatedNavController(bottomSheetNavigator)

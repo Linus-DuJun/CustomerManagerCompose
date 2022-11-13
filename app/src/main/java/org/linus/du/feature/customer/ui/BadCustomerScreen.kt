@@ -1,5 +1,6 @@
 package org.linus.du.feature.customer.ui
 
+import android.content.Intent
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,10 +25,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import org.linus.core.data.db.entities.Customer
-import org.linus.core.ui.common.AddCustomerButton
-import org.linus.core.ui.common.ErrorItem
-import org.linus.core.ui.common.LoadingView
-import org.linus.core.ui.common.RefreshButton
+import org.linus.core.ui.common.*
 import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Red500
 import org.linus.core.utils.extension.Layout
@@ -34,6 +33,7 @@ import org.linus.core.utils.extension.bodyWidth
 import org.linus.du.R
 import org.linus.du.feature.customer.ui.bad_customer.BadCustomerViewModel
 import org.linus.du.feature.customer.ui.normal_vip.NormalVipViewModel
+import org.linus.du.feature.customer.ui.search.SearchActivity
 
 @Composable
 fun BadCustomerScreen(
@@ -170,6 +170,7 @@ private fun BadCustomerAppBar(
     onRefreshActionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     TopAppBar(
         backgroundColor = MaterialTheme.colors.background.copy(
             alpha = 0.97f
@@ -188,6 +189,11 @@ private fun BadCustomerAppBar(
 //                        RefreshButton(onClick = onRefreshActionClick)
 //                    }
 //                }
+                SearchButton(onClick = {
+                    Intent(context, SearchActivity::class.java).let {
+                        context.startActivity(it)
+                    }
+                })
                 AddCustomerButton(onClick = onAddCustomer)
             }
         }
