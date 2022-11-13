@@ -1,6 +1,10 @@
+@file:OptIn(ExperimentalPermissionsApi::class)
+
 package org.linus.du.feature.backup.ui
 
 import android.os.Bundle
+import android.os.Environment
+import android.os.Environment.DIRECTORY_DOCUMENTS
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -9,16 +13,20 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import org.linus.core.ui.common.BaseTopAppBar
@@ -33,8 +41,9 @@ class BackupActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setStoragePath(this.filesDir)
+        viewModel.setStoragePath(Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS))
         setContent {
+            val writePermissionState = rememberPermissionState(permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
             val systemUiController = rememberSystemUiController()
             val isDarkMode = isSystemInDarkTheme()
             SideEffect {
@@ -42,6 +51,9 @@ class BackupActivity : ComponentActivity() {
                     systemUiController.setStatusBarColor(color = Color.Transparent)
                 } else {
                     systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = true)
+                }
+                if (!writePermissionState.status.isGranted) {
+                    writePermissionState.launchPermissionRequest()
                 }
             }
             Scaffold(
@@ -62,6 +74,7 @@ class BackupActivity : ComponentActivity() {
 
 @Composable
 private fun BackupContentView(viewModel: BackupViewModel) {
+
     val state = viewModel.screenState.collectAsState()
     if (state.value.isExporting || state.value.isImporting) {
         LoadingView()

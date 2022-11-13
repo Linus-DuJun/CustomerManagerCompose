@@ -1,6 +1,5 @@
 package org.linus.du
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
@@ -33,6 +32,7 @@ import com.google.accompanist.insets.ui.BottomNavigation
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import kotlinx.coroutines.launch
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.theme.Ocean300
 
@@ -46,6 +46,7 @@ fun HomeScreen(
 ) {
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberAnimatedNavController(bottomSheetNavigator)
+
     Scaffold(
         bottomBar = {
             val currentSelectedItem by navController.currentScreenAsState()
@@ -91,7 +92,10 @@ private fun DrawerView(
     ) {
         Button(
             onClick = onBackup,
-            modifier = Modifier.fillMaxWidth(1f).height(48.dp).padding(horizontal = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth(1f)
+                .height(48.dp)
+                .padding(horizontal = 8.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Ocean300,
                 contentColor = Color.White),
