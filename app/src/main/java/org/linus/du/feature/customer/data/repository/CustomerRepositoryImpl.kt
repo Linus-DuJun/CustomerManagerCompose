@@ -27,6 +27,10 @@ class CustomerRepositoryImpl @Inject constructor(
         return customerDao.getCustomerById(id)
     }
 
+    override suspend fun getCustomerByName(name: String): Flow<List<Customer>> {
+        return customerDao.getCustomerByName(name)
+    }
+
     override fun getSuperCustomers(): PagingSource<Int, Customer> =
         customerDao.getSuperCustomers()
 

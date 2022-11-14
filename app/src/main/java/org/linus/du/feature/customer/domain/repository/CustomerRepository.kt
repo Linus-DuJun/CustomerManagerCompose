@@ -14,6 +14,8 @@ interface CustomerRepository {
 
     suspend fun getCustomer(id: String): Flow<Customer>
 
+    suspend fun getCustomerByName(name: String): Flow<List<Customer>>
+
     fun getSuperCustomers(): PagingSource<Int, Customer>
 
     fun getNormalCustomers(): PagingSource<Int, Customer>

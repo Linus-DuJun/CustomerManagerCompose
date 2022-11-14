@@ -13,6 +13,9 @@ abstract class CustomerDao : BaseDao<Customer>() {
     @Query("SELECT * FROM customer WHERE id = :id")
     abstract fun getCustomerById(id: String): Flow<Customer>
 
+    @Query("SELECT * FROM customer WHERE name LIKE '%' || :name || '%' ")
+    abstract fun getCustomerByName(name: String): Flow<List<Customer>>
+
     @Query("SELECT * FROM customer WHERE type = 3")
     abstract fun getSuperCustomers(): PagingSource<Int, Customer>
 
