@@ -44,7 +44,7 @@
             android:launchMode="singleTop" />
 
          <activity android:name=".feature.customer.ui.search.SearchActivity"
-             android:launchMode="singleTop" />
+             android:launchMode="singleTop"  />
 
     </application>
 

@@ -1,5 +1,8 @@
 package org.linus.du.feature.customer.ui.search
 
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +42,6 @@ class SearchViewModel @Inject constructor(
                 _screenState.value = currentState.copy(isError = true)
             }
             is SearchScreenEvent.SearchResultEvent -> {
-                val results = event.customers
                 _screenState.value = currentState.copy(result = event.customers)
             }
         }
@@ -53,3 +55,17 @@ class SearchViewModel @Inject constructor(
         }
     }
 }
+
+
+
+//IconButton(onClick = { expanded = !expanded }) {
+//    Icon(
+//        imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+//        contentDescription = if (expanded) {
+//            stringResource(R.string.show_less)
+//        } else {
+//            stringResource(R.string.show_more)
+//        }
+//
+//    )
+//}
