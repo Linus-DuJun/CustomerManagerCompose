@@ -31,10 +31,24 @@ fun CustomerInfoScreen(
             onBackClick = onBackClick
         ) }
     ) {
-        if (records.value.isNotEmpty()) {
-            RecordListView(records = records.value)
-        } else {
-            AnimatedLoadingView(visible = true)
+        Column {
+            Text("客户信息:", style = MaterialTheme.typography.h6)
+            Spacer(modifier = Modifier.height(16.dp))
+            if (customer.value != null) {
+                Text(
+                    customer.value!!.info,
+                    style = MaterialTheme.typography.body1,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = "诊疗记录:", style = MaterialTheme.typography.h6)
+                Spacer(modifier = Modifier.height(16.dp))
+                if (records.value.isNotEmpty()) {
+                    RecordListView(records = records.value)
+                }
+            } else {
+                AnimatedLoadingView(visible = true)
+            }
         }
     }
 }
@@ -43,8 +57,7 @@ fun CustomerInfoScreen(
 private fun CustomerInfoView(customer: Customer) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(36.dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -68,7 +81,7 @@ private fun RecordListView(records: List<Subject>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
         itemsIndexed(records) { index, item ->
             RecordItemView(index = index, record = item)
