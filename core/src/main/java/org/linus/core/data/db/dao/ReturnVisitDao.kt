@@ -10,9 +10,10 @@ import org.linus.core.data.db.entities.ReturnVisitEntity
 abstract class ReturnVisitDao: BaseDao<ReturnVisitEntity>() {
 
     @Query(
-        "SELECT * FROM return_visit WHERE rv_time >= :from ORDER BY rv_time ASC LIMIT 100"
+        "SELECT * FROM return_visit WHERE status = 1 ORDER BY rv_time ASC LIMIT 100"
     )
-    abstract fun getReturnVisit(from: Long): Flow<List<ReturnVisitEntity>>
+    abstract fun getReturnVisit(): Flow<List<ReturnVisitEntity>>
+
 
     @Delete
     abstract fun delete(record: ReturnVisitEntity)

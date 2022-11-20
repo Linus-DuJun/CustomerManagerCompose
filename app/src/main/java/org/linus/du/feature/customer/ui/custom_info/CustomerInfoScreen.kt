@@ -100,7 +100,7 @@ private fun RecordItemView(index: Int, record: Subject) {
                 Text(text = getReadableDateByTime(record.time), style = MaterialTheme.typography.body1)
             }
             Spacer(modifier = Modifier.height(4.dp))
-            Text(record.description, style = MaterialTheme.typography.body1)
+//            Text(record.subject, style = MaterialTheme.typography.body1)
         }
     }
 }

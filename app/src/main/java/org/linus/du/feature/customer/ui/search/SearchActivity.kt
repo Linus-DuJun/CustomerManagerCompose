@@ -29,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Green
+import org.linus.core.ui.theme.Grey500
 import org.linus.core.ui.theme.Red500
 import org.linus.du.R
 import org.linus.du.feature.customer.ui.custom_info.CustomerInfoActivity
@@ -125,7 +126,7 @@ private fun CustomerItemView(
         Icon(
             painter = painterResource(id = R.drawable.ic_bookmark),
             contentDescription = null,
-            tint = Green,
+            tint = getTintColor(customer),
             modifier = Modifier.size(width = 22.dp, height = 24.dp)
         )
         Spacer(modifier = Modifier.padding(8.dp))
@@ -154,6 +155,13 @@ private fun CustomerItemView(
         }
     }
 }
+
+private fun getTintColor(customer: Customer) =
+    when (customer.type) {
+        1 -> Red500
+        2 -> Color.Black
+        else -> Green
+    }
 
 @Composable
 private fun SearchBox(

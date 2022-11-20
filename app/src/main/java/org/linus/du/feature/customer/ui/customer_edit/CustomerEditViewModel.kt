@@ -150,8 +150,7 @@ class CustomerEditViewModel @Inject constructor(
                     customerName = state.customer.name,
                     customerPhone = state.customer.id,
                     subject = state.record,
-                    time = System.currentTimeMillis(),
-                    description = state.recordDesc
+                    time = System.currentTimeMillis()
                 )
                 recordRepository.addRecord(record)
                 if (state.returnVisitItems.isNotEmpty()) {
@@ -164,7 +163,8 @@ class CustomerEditViewModel @Inject constructor(
                             recordId = record.id,
                             recordTitle = record.subject,
                             rvTitle = it.title,
-                            rvTime = it.timeStamp
+                            rvTime = it.timeStamp,
+                            status = 1
                         )
                     }.also {
                         returnVisitRepository.addReturnVisitItems(it)

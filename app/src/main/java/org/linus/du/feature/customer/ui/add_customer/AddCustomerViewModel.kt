@@ -122,6 +122,35 @@ class AddCustomerViewModel @Inject constructor(
             is AddCustomerScreenEvent.FinishWithSuccessEvent -> {
                 _screenState.value = currentState.copy(finishWithSuccess = true)
             }
+            is AddCustomerScreenEvent.OnSelectBirthDayEvent -> {
+                _screenState.value = currentState.copy(showBirthdayPickerDialog = true)
+            }
+            is AddCustomerScreenEvent.OnBirthdayConfirmedEvent -> {
+                val newInfo = "生日: ${event.humanReadableTime}, ${currentState.customerInfo}"
+                _screenState.value = currentState.copy(
+                    showBirthdayPickerDialog = false,
+                    humanReadableBirthDay = event.humanReadableTime,
+                    birthDay = event.time,
+                    customerInfo = newInfo
+                )
+            }
+            is AddCustomerScreenEvent.OnSelectRecordDateEvent -> {
+                _screenState.value = currentState.copy(showRecordDatePickerDialog = true)
+            }
+            is AddCustomerScreenEvent.OnRecordDateConfirmedEvent -> {
+                val newRecord = "${event.humanReadableTime}, ${currentState.record}"
+                _screenState.value = currentState.copy(
+                    showRecordDatePickerDialog = false,
+                    recordDate = event.time,
+                    humanReadableRecordDate = event.humanReadableTime,
+                    record = newRecord
+                )
+            }
+            is AddCustomerScreenEvent.CustomerInfoInputEvent -> {
+                _screenState.value = currentState.copy(
+                    customerInfo = event.info
+                )
+            }
         }
     }
 
@@ -155,7 +184,9 @@ class AddCustomerViewModel @Inject constructor(
             val customer = Customer(
                 id = state.phone,
                 name = state.name,
-                type = getCustomerType(state = state)
+                type = getCustomerType(state = state),
+                birthday = state.birthDay,
+                info = state.customerInfo
             )
             customerRepository.addCustomer(customer)
             val record = Subject(
@@ -163,8 +194,7 @@ class AddCustomerViewModel @Inject constructor(
                 customerName = customer.name,
                 customerPhone = customer.id,
                 subject = state.record,
-                time = System.currentTimeMillis(),
-                description = state.recordDescription
+                time = System.currentTimeMillis()
             )
             recordRepository.addRecord(record)
             if (state.returnVisitItems.isNotEmpty()) {
@@ -177,7 +207,8 @@ class AddCustomerViewModel @Inject constructor(
                         recordId = record.id,
                         recordTitle = record.subject,
                         rvTitle = it.title,
-                        rvTime = it.timeStamp
+                        rvTime = it.timeStamp,
+                        status =  1
                     )
                 }.also {
                     returnVisitRepository.addReturnVisitItems(it)

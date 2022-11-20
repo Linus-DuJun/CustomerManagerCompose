@@ -14,4 +14,5 @@ data class ReturnVisitEntity(
     @ColumnInfo(name = "record_title") val recordTitle: String,
     @ColumnInfo(name = "rv_title") val rvTitle: String,
     @ColumnInfo(name = "rv_time") val rvTime: Long,
+    val status: Int  // 1 未完成， 0 完成
 )

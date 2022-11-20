@@ -27,6 +27,9 @@ import org.linus.core.ui.common.SearchButton
 import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Green
 import org.linus.core.utils.extension.bodyWidth
+import org.linus.core.utils.extension.getHumanReadableDate
+import org.linus.core.utils.extension.getReadableBirthday
+import org.linus.core.utils.extension.getReadableDateByTime
 import org.linus.du.R
 import org.linus.du.feature.customer.ui.search.SearchActivity
 import org.linus.du.feature.customer.ui.super_vip.SuperVipViewModel
@@ -144,7 +147,7 @@ private fun SuperViewItemView(
             Row {
                 Text(customer.name, style = MaterialTheme.typography.body1)
                 Spacer(modifier = Modifier.width(8.dp))
-//                Text("32岁", style = MaterialTheme.typography.body1)
+                Text(getReadableBirthday(customer.birthday), style = MaterialTheme.typography.body1)
             }
             Text(customer.id, style = MaterialTheme.typography.body2)
         }

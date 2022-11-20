@@ -257,12 +257,12 @@ private fun EditContentView(
                 onRecordInput = { viewModel.obtainEvent(EditScreenEvent.RecordInputEvent(it)) }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            RecordDescriptionView(
-                description = state.value.recordDesc,
-                onValueChanged = {
-                    viewModel.obtainEvent(EditScreenEvent.RecordDescInputEvent(it))
-                }
-            )
+//            RecordDescriptionView(
+//                description = state.value.recordDesc,
+//                onValueChanged = {
+//                    viewModel.obtainEvent(EditScreenEvent.RecordDescInputEvent(it))
+//                }
+//            )
             Spacer(modifier = Modifier.height(16.dp))
             AddReturnVisitButtonView(
                 onAddReturnVisit = {viewModel.obtainEvent(EditScreenEvent.OnAddReturnVisitButtonClickedEvent)}

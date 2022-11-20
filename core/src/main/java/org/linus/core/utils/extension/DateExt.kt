@@ -26,6 +26,14 @@ fun getReadableDateByTime(timeStamp: Long): String {
     return "${month}月${localDate.dayOfMonth}日"
 }
 
+fun getReadableBirthday(timeStamp: Long): String {
+    val time = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp), TimeZone.getDefault().toZoneId())
+    val localDate = time.toLocalDate()
+    val month = localDate.month.value
+    val year = localDate.year
+    return "${year}年${month}月${localDate.dayOfMonth}日"
+}
+
 fun getHumanReadableDate(): String {
     val c = Calendar.getInstance()
     return "${c.get(Calendar.YEAR)} 年 ${c.get(Calendar.MONTH) + 1} 月 ${c.get(Calendar.DAY_OF_MONTH)}"

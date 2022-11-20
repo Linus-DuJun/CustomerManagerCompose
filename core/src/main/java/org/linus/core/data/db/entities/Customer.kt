@@ -8,4 +8,6 @@ data class Customer(
     @PrimaryKey val id: String, // tel number
     val name: String,
     val type: Int,  //1 普通  2 vip 3 super vip
+    val birthday: Long,
+    val info: String
 )

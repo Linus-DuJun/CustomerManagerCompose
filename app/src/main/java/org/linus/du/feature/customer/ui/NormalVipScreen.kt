@@ -27,6 +27,8 @@ import org.linus.core.ui.theme.Gray300
 import org.linus.core.ui.theme.Green
 import org.linus.core.utils.extension.Layout
 import org.linus.core.utils.extension.bodyWidth
+import org.linus.core.utils.extension.getReadableBirthday
+import org.linus.core.utils.extension.getReadableDateByTime
 import org.linus.du.R
 import org.linus.du.feature.customer.ui.normal_vip.NormalVipViewModel
 import org.linus.du.feature.customer.ui.search.SearchActivity
@@ -141,7 +143,7 @@ private fun NormalCustomerItemView(
             Row {
                 Text(customer.name, style = MaterialTheme.typography.body1)
                 Spacer(modifier = Modifier.width(8.dp))
-//                Text("32岁", style = MaterialTheme.typography.body1)
+                Text(getReadableBirthday(customer.birthday), style = MaterialTheme.typography.body1)
             }
             Text(customer.id, style = MaterialTheme.typography.body2)
         }

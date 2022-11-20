@@ -81,6 +81,27 @@ fun AddCustomerScreen(
                     },
                 )
             }
+            if (screenState.value.showBirthdayPickerDialog) {
+                DatePickerView(
+                    onDateConfirmed = { time, humanReadableTime ->
+//                        val simpleBirthDay = humanReadableTime.substring(2, humanReadableTime.length -1).replace("年", "/").replace("月", "/")
+                        AddCustomerScreenEvent.OnBirthdayConfirmedEvent(time, humanReadableTime).let {
+                            viewModel.obtainEvent(it)
+                        }
+                    }
+                )
+            }
+
+            if (screenState.value.showRecordDatePickerDialog) {
+                DatePickerView(
+                    onDateConfirmed = { time, humanReadableTime ->
+                        AddCustomerScreenEvent.OnRecordDateConfirmedEvent(time, humanReadableTime).let {
+                            viewModel.obtainEvent(it)
+                        }
+                    }
+                )
+            }
+
             if (screenState.value.isLoading) {
                 AnimatedLoadingView(visible = true)
             }
@@ -95,7 +116,6 @@ fun AddCustomerScreen(
 private fun ContentView(
     viewModel: AddCustomerViewModel,
     state: State<AddCustomerScreenStateHolder>,
-
     onSaveClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -107,16 +127,35 @@ private fun ContentView(
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            NameView(
-                name = state.value.name,
-                isError = state.value.noNameError,
-                onValueChanged = { viewModel.obtainEvent(AddCustomerScreenEvent.NameInputEvent(it)) }
-            )
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                NameView(
+                    modifier = Modifier.weight(1f),
+                    name = state.value.name,
+                    isError = state.value.noNameError,
+                    onValueChanged = { viewModel.obtainEvent(AddCustomerScreenEvent.NameInputEvent(it)) }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                PhoneView(
+                    modifier = Modifier.weight(1f),
+                    phone = state.value.phone,
+                    isError = state.value.noPhoneError,
+                    onValueChanged = { viewModel.obtainEvent(AddCustomerScreenEvent.PhoneInputEvent(it)) }
+                )
+//                Spacer(modifier = Modifier.width(8.dp))
+//                BirthdayView(
+//                    modifier = Modifier.weight(1.5f),
+//                    state = state.value,
+//                    onSelectBirthday = { }
+//                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
-            PhoneView(
-                phone = state.value.phone,
-                isError = state.value.noPhoneError,
-                onValueChanged = { viewModel.obtainEvent(AddCustomerScreenEvent.PhoneInputEvent(it)) }
+            CustomerInfoView(
+                screenState = state,
+                onCustomerInfoInput = { viewModel.obtainEvent(AddCustomerScreenEvent.CustomerInfoInputEvent(it)) },
+                onSelectBirthday = { viewModel.obtainEvent(AddCustomerScreenEvent.OnSelectBirthDayEvent) }
             )
             Spacer(modifier = Modifier.height(8.dp))
             VipLevelView(
@@ -126,15 +165,16 @@ private fun ContentView(
             Spacer(modifier = Modifier.height(8.dp))
             RecordView(
                 screenState = state,
-                onRecordInput = { viewModel.obtainEvent(AddCustomerScreenEvent.RecordInputEvent(it)) }
+                onRecordInput = { viewModel.obtainEvent(AddCustomerScreenEvent.RecordInputEvent(it)) },
+                onSelectRecordDate = { viewModel.obtainEvent(AddCustomerScreenEvent.OnSelectRecordDateEvent) }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            RecordDescriptionView(
-                description = state.value.recordDescription,
-                onValueChanged = {
-                    viewModel.obtainEvent(AddCustomerScreenEvent.RecordDescInputEvent(it))
-                }
-            )
+//            RecordDescriptionView(
+//                description = state.value.recordDescription,
+//                onValueChanged = {
+//                    viewModel.obtainEvent(AddCustomerScreenEvent.RecordDescInputEvent(it))
+//                }
+//            )
             Spacer(modifier = Modifier.height(16.dp))
             AddReturnVisitButtonView(
                 onAddReturnVisit = {viewModel.obtainEvent(AddCustomerScreenEvent.OnAddReturnVisitButtonClickedEvent)}
@@ -208,76 +248,26 @@ fun RecordDescriptionView(
     )
 }
 
-/**
- * 门诊记录UI
- */
 @Composable
 private fun RecordView(
     screenState: State<AddCustomerScreenStateHolder>,
-    onRecordInput: (String) -> Unit
-) {
-    val vipRecordState = rememberRecordsState()
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Box {
-            RecordOutlinedTextField(
-                record = screenState.value.record,
-                state = vipRecordState,
-                onRecordInput = onRecordInput,
-                isError = screenState.value.noRecordError)
-            RecordDropdownMenuView(state = vipRecordState, onLevelSelected = onRecordInput)
-        }
-    }
-}
-
-@Composable
-private fun RecordDropdownMenuView(
-    state: VipRecordStateHolder,
-    onLevelSelected: (String) -> Unit
-) {
-    DropdownMenu(
-        modifier = Modifier.width( with(LocalDensity.current) { state.size.width.toDp()} ),
-        expanded = state.opened,
-        onDismissRequest = { state.onOpened(false) }
-    ) {
-        state.records.forEachIndexed { index, record ->
-            DropdownMenuItem(onClick = {
-                state.onSelectedIndex(index)
-                state.onOpened(false)
-                onLevelSelected(record)
-            }) {
-                Text(record)
-            }
-        }
-    }
-}
-
-
-
-@Composable
-private fun RecordOutlinedTextField(
-    record: String,
-    state: VipRecordStateHolder,
     onRecordInput: (String) -> Unit,
-    isError: Boolean
+    onSelectRecordDate: () -> Unit,
 ) {
     OutlinedTextField(
         modifier = Modifier
             .focusable(true)
-            .clickable { state.onOpened(true) }
-            .fillMaxWidth()
-            .onFocusChanged { if (it.isFocused) state.onOpened(true) }
-            .onGloballyPositioned { state.onSize(it.size.toSize()) },
-        value = record,
+            .fillMaxWidth(),
+        maxLines = 3,
+        value = screenState.value.record,
         onValueChange = onRecordInput,
-        isError = isError,
+        isError = screenState.value.noRecordError,
         label = { Text(stringResource(id = R.string.record_items)) },
         trailingIcon = {
             Icon(
-                painter = painterResource(id = state.icon),
+                painter = painterResource(id = R.drawable.ic_date_picker),
                 contentDescription = null,
-                modifier = Modifier.clickable { state.onOpened(!state.opened) }
+                modifier = Modifier.clickable { onSelectRecordDate.invoke() }
             )
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -290,6 +280,89 @@ private fun RecordOutlinedTextField(
         )
     )
 }
+
+///**
+// * 门诊记录UI
+// */
+//@Composable
+//private fun RecordView(
+//    screenState: State<AddCustomerScreenStateHolder>,
+//    onRecordInput: (String) -> Unit
+//) {
+//    val vipRecordState = rememberRecordsState()
+//    Column(
+//        modifier = Modifier.fillMaxWidth()
+//    ) {
+//        Box {
+//            RecordOutlinedTextField(
+//                record = screenState.value.record,
+//                state = vipRecordState,
+//                onRecordInput = onRecordInput,
+//                isError = screenState.value.noRecordError)
+//            RecordDropdownMenuView(state = vipRecordState, onLevelSelected = onRecordInput)
+//        }
+//    }
+//}
+//
+//@Composable
+//private fun RecordDropdownMenuView(
+//    state: VipRecordStateHolder,
+//    onLevelSelected: (String) -> Unit
+//) {
+//    DropdownMenu(
+//        modifier = Modifier.width( with(LocalDensity.current) { state.size.width.toDp()} ),
+//        expanded = state.opened,
+//        onDismissRequest = { state.onOpened(false) }
+//    ) {
+//        state.records.forEachIndexed { index, record ->
+//            DropdownMenuItem(onClick = {
+//                state.onSelectedIndex(index)
+//                state.onOpened(false)
+//                onLevelSelected(record)
+//            }) {
+//                Text(record)
+//            }
+//        }
+//    }
+//}
+//
+//
+//
+//@Composable
+//private fun RecordOutlinedTextField(
+//    record: String,
+//    state: VipRecordStateHolder,
+//    onRecordInput: (String) -> Unit,
+//    isError: Boolean
+//) {
+//    OutlinedTextField(
+//        modifier = Modifier
+//            .focusable(true)
+//            .clickable { state.onOpened(true) }
+//            .fillMaxWidth()
+//            .onFocusChanged { if (it.isFocused) state.onOpened(true) }
+//            .onGloballyPositioned { state.onSize(it.size.toSize()) },
+//        value = record,
+//        onValueChange = onRecordInput,
+//        isError = isError,
+//        label = { Text(stringResource(id = R.string.record_items)) },
+//        trailingIcon = {
+//            Icon(
+//                painter = painterResource(id = state.icon),
+//                contentDescription = null,
+//                modifier = Modifier.clickable { state.onOpened(!state.opened) }
+//            )
+//        },
+//        colors = TextFieldDefaults.outlinedTextFieldColors(
+//            focusedBorderColor = MaterialTheme.colors.primary,
+//            focusedLabelColor = MaterialTheme.colors.primary,
+//            cursorColor = MaterialTheme.colors.primary,
+//            errorBorderColor = Red500,
+//            errorCursorColor = Red500,
+//            errorLabelColor = Red500
+//        )
+//    )
+//}
 
 
 @Composable
@@ -369,10 +442,11 @@ private fun VipLevelDropdownMenuView(
 private fun NameView(
     name: String,
     isError: Boolean,
-    onValueChanged: (String) -> Unit
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         value = name,
         onValueChange = onValueChanged,
         label = { Text("姓名") },
@@ -390,13 +464,47 @@ private fun NameView(
 }
 
 @Composable
+private fun CustomerInfoView(
+    screenState: State<AddCustomerScreenStateHolder>,
+    onCustomerInfoInput: (String) -> Unit,
+    onSelectBirthday: () -> Unit
+) {
+    OutlinedTextField(
+        modifier = Modifier
+            .focusable(true)
+            .fillMaxWidth(),
+        maxLines = 3,
+        value = screenState.value.customerInfo,
+        onValueChange = onCustomerInfoInput,
+        label = { Text("客户信息") },
+        trailingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_date_picker),
+                contentDescription = null,
+                modifier = Modifier.clickable { onSelectBirthday.invoke() }
+            )
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = MaterialTheme.colors.primary,
+            focusedLabelColor = MaterialTheme.colors.primary,
+            cursorColor = MaterialTheme.colors.primary,
+            errorBorderColor = Red500,
+            errorCursorColor = Red500,
+            errorLabelColor = Red500
+        )
+    )
+
+}
+
+@Composable
 private fun PhoneView(
     phone: String,
     isError: Boolean,
-    onValueChanged: (String) -> Unit
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         value = phone,
         onValueChange = onValueChanged,
         label = { Text("电话") },

@@ -10,7 +10,11 @@ sealed class AddCustomerScreenEvent {
     object OnAddReturnVisitButtonClickedEvent: AddCustomerScreenEvent()
     object OnAddReturnVisitCancelEvent: AddCustomerScreenEvent()
     object OnSelectDateEvent: AddCustomerScreenEvent()
+    object OnSelectBirthDayEvent: AddCustomerScreenEvent()
+    object OnSelectRecordDateEvent: AddCustomerScreenEvent()
     data class RemoveReturnVisitItemEvent(val returnVisit: ReturnVisit) : AddCustomerScreenEvent()
+    data class OnRecordDateConfirmedEvent(val time: Long, val humanReadableTime: String): AddCustomerScreenEvent()
+    data class OnBirthdayConfirmedEvent(val time: Long, val humanReadableTime: String): AddCustomerScreenEvent()
     data class OnReturnVisitDateConfirmedEvent(val time: Long, val humanReadableTime: String): AddCustomerScreenEvent()
     data class OnAddReturnVisitConfirmEvent(val returnVisit: ReturnVisit): AddCustomerScreenEvent()
     data class OnReturnVisitTitleInputEvent(val title: String): AddCustomerScreenEvent()
@@ -20,5 +24,5 @@ sealed class AddCustomerScreenEvent {
     data class NameInputEvent(val name: String): AddCustomerScreenEvent()
     data class PhoneInputEvent(val phone: String): AddCustomerScreenEvent()
     data class RecordDescInputEvent(val desc: String): AddCustomerScreenEvent()
-
+    data class CustomerInfoInputEvent(val info: String): AddCustomerScreenEvent()
 }
