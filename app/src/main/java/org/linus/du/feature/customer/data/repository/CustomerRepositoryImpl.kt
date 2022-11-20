@@ -11,6 +11,14 @@ class CustomerRepositoryImpl @Inject constructor(
     private val customerDao: CustomerDao
 ) : CustomerRepository {
 
+    override suspend fun getCustomerCount(): Int {
+        return customerDao.getCustomerCount()
+    }
+
+    override suspend fun getCustomersByOffset(offset: Int): List<Customer> {
+        return customerDao.getCustomersByOffset(offset * 300)
+    }
+
     override suspend fun addCustomer(customer: Customer) {
         customerDao.insert(customer)
     }

@@ -10,6 +10,12 @@ abstract class CustomerDao : BaseDao<Customer>() {
     @Query("SELECT * FROM customer")
     abstract fun getAll(): Flow<List<Customer>>
 
+    @Query("SELECT COUNT(*) FROM customer")
+    abstract fun getCustomerCount(): Int
+
+    @Query("SELECT * FROM customer LIMIT 300 OFFSET :offset")
+    abstract fun getCustomersByOffset(offset: Int): List<Customer>
+
     @Query("SELECT * FROM customer WHERE id = :id")
     abstract fun getCustomerById(id: String): Flow<Customer>
 

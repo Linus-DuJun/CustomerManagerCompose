@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,11 +15,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.utils.extension.getHumanReadableDate
+import org.linus.core.utils.extension.getReadableBirthday
 import org.linus.core.utils.toast.Toaster
 import org.linus.du.feature.backup.domain.repository.BackupRepository
 import org.linus.du.feature.customer.domain.repository.CustomerRepository
 import java.io.File
 import javax.inject.Inject
+import kotlin.math.ceil
 
 @HiltViewModel
 class BackupViewModel @Inject constructor(
@@ -63,6 +67,20 @@ class BackupViewModel @Inject constructor(
             val customerFile: File = generateCustomerFile()
             val subjectFile: File = generateSubjectFile()
             val returnVisitFile: File = generateReturnVisitFile()
+            val count = customerRepository.getCustomerCount()
+            val times = (count / 300).toInt() + 1
+            for (i in 0 .. times) {
+                val customers = customerRepository.getCustomersByOffset(i)
+                toaster.showToast("i is $i, customers size: ${customers.size}")
+                csvWriter().open(customerFile, append = true) {
+                    if (i == 0) {
+                        writeRow(listOf("id", "name", "type", "birthday", "info"))
+                    }
+                    customers.forEachIndexed { index, customer ->
+                        writeRow(listOf(customer.id, customer.name, customer.type, customer.birthday, customer.info))
+                    }
+                }
+            }
 
             Log.i("dujun", "file dir: ${customerFile.absoluteFile}")
             toaster.showToast("导出成功")
@@ -71,45 +89,42 @@ class BackupViewModel @Inject constructor(
     }
 
     private fun importData() {
+        val customerFile = File(_storagePath.value, getCustomerCSVFileName())
+        if (customerFile.exists()) {
+            csvReader().open(customerFile) {
+                readAllAsSequence().forEach { row: List<String> ->
+//                    Log.i("dujun","id: ${row[0]}, name: ${row[1]}, type: ${row[2]}, birthday: ${row[3]}, info: ${row[4]}")
+                    val customer = Customer(
+                        id = row[0],
+                        name = row[1],
+                        type = row[2].toInt(),
+                        birthday = row[3].toLong(),
+                        info = row[4]
+                    )
+                    Log.i("dujun", "customer- id: ${customer.id}, name: ${customer.name}, type: ${customer.type}, birthday: ${getReadableBirthday(customer.birthday)}, info: ${customer.info}")
+                }
+            }
+        }
+//        val list = mutableListOf<Customer>()
+//        for (i in 0 .. 1000) {
+//            val customer = Customer(
+//                id = "1380807$i",
+//                name = "客户$i",
+//                type =  i % 3,
+//                birthday = System.currentTimeMillis(),
+//                info = "$i 随便输入的客户信息，看看就好$i"
+//            )
+//            list.add(customer)
+//        }
 //        viewModelScope.launch(Dispatchers.IO) {
-//            for (i in 1 .. 11) {
-//                val customers = mutableListOf<Customer>()
-//                for (j in 1 .. 1000) {
-//                    customers.add(Customer(
-//                        id = "1380807975$j",
-//                        name = "super vip $j",
-//                        type = 3
-//                    ))
-//                }
-//                customerRepository.addCustomers(customers)
-//            }
-//            for (isec in 1 .. 11) {
-//                val customers = mutableListOf<Customer>()
-//                for (jo in 1 .. 1000) {
-//                    customers.add(Customer(
-//                        id = "1776128021$jo",
-//                        name = "normal vip $jo",
-//                        type = 2
-//                    ))
-//                }
-//                customerRepository.addCustomers(customers)
-//            }
-//            for (ithi in 1 .. 11) {
-//                val customers = mutableListOf<Customer>()
-//                for (k in 1 .. 1000) {
-//                    customers.add(Customer(
-//                        id = "1776128021$k",
-//                        name = "bad customer $k",
-//                        type = 1
-//                    ))
-//                }
-//                customerRepository.addCustomers(customers)
-//            }
+//            customerRepository.addCustomers(list)
 //            obtainEvent(BackupScreenEvent.ImportDataEventSuccess)
 //        }
     }
 
     private fun generateCustomerFile(): File {
+        val file = File(_storagePath.value, getCustomerCSVFileName())
+        if (file.exists()) file.delete()
         return File(_storagePath.value, getCustomerCSVFileName())
     }
 
@@ -122,7 +137,7 @@ class BackupViewModel @Inject constructor(
     }
 
 
-    private fun getCustomerCSVFileName(): String = "Customer_${getHumanReadableDate()}.csv"
-    private fun getSubjectCSVFileName(): String = "Subject_${getHumanReadableDate()}.csv"
-    private fun getReturnVisitCSVFileName() = "ReturnVisit_${getHumanReadableDate()}.csv"
+    private fun getCustomerCSVFileName(): String = "Customer_Latest.csv"
+    private fun getSubjectCSVFileName(): String = "Subject_Latest.csv"
+    private fun getReturnVisitCSVFileName() = "ReturnVisit_Latest.csv"
 }
