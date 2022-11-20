@@ -14,6 +14,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -108,7 +109,7 @@ private fun ReturnVisitItemView(
         Icon(
             painter = painterResource(id = R.drawable.ic_date_picker),
             contentDescription = null,
-            tint = if (item.customerType == 1) Red500 else Green,
+            tint = if (item.customerType == 1) Red500 else if (item.customerType == 2) Color.Black else Green,
             modifier = Modifier.size(width = 22.dp, height = 24.dp)
         )
         Spacer(modifier = Modifier.padding(8.dp))

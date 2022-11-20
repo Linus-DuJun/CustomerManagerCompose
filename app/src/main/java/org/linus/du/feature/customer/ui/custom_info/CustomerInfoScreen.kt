@@ -3,6 +3,7 @@ package org.linus.du.feature.customer.ui.custom_info
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -85,6 +86,7 @@ private fun RecordListView(records: List<Subject>) {
     ) {
         itemsIndexed(records) { index, item ->
             RecordItemView(index = index, record = item)
+            Divider(startIndent = 8.dp)
         }
     }
 }
@@ -98,9 +100,7 @@ private fun RecordItemView(index: Int, record: Subject) {
         Text("${index + 1}", style = MaterialTheme.typography.body1)
         Spacer(modifier = Modifier.width(16.dp))
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .height(56.dp),
+            modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
         ) {
