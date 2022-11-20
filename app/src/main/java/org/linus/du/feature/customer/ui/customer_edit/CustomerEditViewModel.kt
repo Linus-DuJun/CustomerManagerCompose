@@ -51,7 +51,11 @@ class CustomerEditViewModel @Inject constructor(
                 save()
             }
             is EditScreenEvent.CustomerLoadedEvent -> {
-                _screenState.value = currentState.copy(isLoading = false, customer = event.customer)
+                _screenState.value = currentState.copy(
+                    isLoading = false,
+                    customer = event.customer,
+                    customerInfo = event.customer.info
+                )
             }
             is EditScreenEvent.VipLevelSelectedEvent -> {
                 val customer = currentState.customer!!.copy(
@@ -129,6 +133,43 @@ class CustomerEditViewModel @Inject constructor(
             }
             is EditScreenEvent.FinishWithSuccessEvent -> {
                 _screenState.value = currentState.copy(finishWithSuccess = true)
+            }
+            is EditScreenEvent.OnSelectBirthDayEvent -> {
+                _screenState.value = currentState.copy(showBirthdayPickerDialog = true)
+            }
+            is EditScreenEvent.OnSelectRecordDateEvent -> {
+                _screenState.value = currentState.copy(showRecordDatePickerDialog = true)
+            }
+            is EditScreenEvent.BirthdayConfirmedEvent -> {
+                val newInfo = "生日: ${event.humanReadableBirthday}, ${currentState.customerInfo}"
+                val customer = currentState.customer!!.copy(
+                    birthday = event.time
+                )
+                _screenState.value = currentState.copy(
+                    showBirthdayPickerDialog = false,
+                    humanReadableBirthday = event.humanReadableBirthday,
+                    birthday = event.time,
+                    customerInfo = newInfo,
+                    customer = customer
+                )
+            }
+            is EditScreenEvent.RecordDateConfirmedEvent -> {
+                val newRecord = "${event.humanReadableDate}, ${currentState.record}"
+                _screenState.value = currentState.copy(
+                    showRecordDatePickerDialog = false,
+                    recordDate = event.time,
+                    humanReadableRecordDate = event.humanReadableDate,
+                    record = newRecord
+                )
+            }
+            is EditScreenEvent.CustomerInfoInputEvent -> {
+                val customer = currentState.customer!!.copy(
+                    info = event.info
+                )
+                _screenState.value = currentState.copy(
+                    customerInfo = event.info,
+                    customer = customer
+                )
             }
         }
     }
