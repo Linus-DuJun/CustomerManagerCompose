@@ -9,6 +9,11 @@ import javax.inject.Inject
 class ReturnVisitRepositoryImpl @Inject constructor(
     private val dao: ReturnVisitDao
 ): ReturnVisitRepository {
+    override suspend fun getReturnVisitCount(): Int = dao.getReturnVisitCount()
+
+    override suspend fun getReturnVisitByOffset(offset: Int): List<ReturnVisitEntity> =
+        dao.getReturnVisitByOffset(offset)
+
     override suspend fun addReturnVisitItems(items: List<ReturnVisitEntity>) {
         dao.insert(entities = items)
     }

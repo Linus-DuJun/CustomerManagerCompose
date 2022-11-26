@@ -175,7 +175,11 @@ class AddCustomerViewModel @Inject constructor(
             obtainEvent(AddCustomerScreenEvent.NoRecordErrorEvent)
             return
         }
-
+        if (_screenState.value.recordDate == 0L) {
+            toaster.showToast("请选择就诊的日期")
+            obtainEvent(AddCustomerScreenEvent.NoRecordErrorEvent)
+            return
+        }
         val exceptionHandler = CoroutineExceptionHandler { _, e ->
             Log.i("dujun", "${e.message}")
         }

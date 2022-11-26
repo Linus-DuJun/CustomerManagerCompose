@@ -178,6 +178,11 @@ class CustomerEditViewModel @Inject constructor(
         if (state ==  SUPER_VIP) 3 else if (state == NORMAL_VIP) 2 else 1
 
     private fun save() {
+        if (_screenState.value.record.isNotEmpty() &&
+                _screenState.value.recordDate == 0L) {
+            toaster.showToast("请选择就诊日期")
+            return
+        }
 
         val exceptionHandler = CoroutineExceptionHandler { _, e ->
             Log.i("dujun", "${e.message}")

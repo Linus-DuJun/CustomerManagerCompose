@@ -17,13 +17,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -62,10 +58,10 @@ class BackupActivity : ComponentActivity() {
                     onBackClick = { finish() })
                 }
             ) {
-                val state = viewModel.screenState.collectAsState()
-                if (state.value.exportSuccess || state.value.importSuccess) {
-                    this@BackupActivity.finish()
-                }
+//                val state = viewModel.screenState.collectAsState()
+//                if (state.value.exportSuccess || state.value.importSuccess) {
+//                    this@BackupActivity.finish()
+//                }
                 BackupContentView(viewModel = hiltViewModel())
             }
         }
@@ -80,47 +76,128 @@ private fun BackupContentView(viewModel: BackupViewModel) {
         LoadingView()
     }
     AnimatedVisibility(
-        visible = !viewModel.screenState.value.isExporting && !viewModel.screenState.value.isImporting
+        visible = true
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Button(
-                onClick = { viewModel.obtainEvent(BackupScreenEvent.ExportDataEvent) },
-                modifier = Modifier.size(width = 180.dp, height = 48.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Ocean300,
-                    contentColor = Color.White),
-                elevation = ButtonDefaults.elevation(
-                    defaultElevation = 4.dp,
-                    pressedElevation = 6.dp,
-                    disabledElevation = 4.dp,
-                    hoveredElevation = 6.dp,
-                    focusedElevation = 6.dp),
-                shape = RoundedCornerShape(4.dp),
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = stringResource(id = R.string.backup_export))
+                Button(
+                    onClick = { viewModel.obtainEvent(BackupScreenEvent.ExportCustomerEvent) },
+                    modifier = Modifier.size(width = 120.dp, height = 48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Ocean300,
+                        contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 4.dp,
+                        pressedElevation = 6.dp,
+                        disabledElevation = 4.dp,
+                        hoveredElevation = 6.dp,
+                        focusedElevation = 6.dp),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(text = stringResource(id = R.string.backup_customer))
+                }
+
+                Button(
+                    onClick = { viewModel.obtainEvent(BackupScreenEvent.ExportRecordEvent) },
+                    modifier = Modifier.size(width = 120.dp, height = 48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Ocean300,
+                        contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 4.dp,
+                        pressedElevation = 6.dp,
+                        disabledElevation = 4.dp,
+                        hoveredElevation = 6.dp,
+                        focusedElevation = 6.dp),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(text = stringResource(id = R.string.backup_record))
+                }
+
+                Button(
+                    onClick = { viewModel.obtainEvent(BackupScreenEvent.ExportReturnVisitEvent) },
+                    modifier = Modifier.size(width = 120.dp, height = 48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Ocean300,
+                        contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 4.dp,
+                        pressedElevation = 6.dp,
+                        disabledElevation = 4.dp,
+                        hoveredElevation = 6.dp,
+                        focusedElevation = 6.dp),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(text = stringResource(id = R.string.backup_return_visit))
+                }
             }
 
             Spacer(modifier = Modifier.height(56.dp))
 
-            Button(
-                onClick = { viewModel.obtainEvent(BackupScreenEvent.ImportDataEvent) },
-                modifier = Modifier.size(width = 180.dp, height = 48.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Ocean300,
-                    contentColor = Color.White),
-                elevation = ButtonDefaults.elevation(
-                    defaultElevation = 4.dp,
-                    pressedElevation = 6.dp,
-                    disabledElevation = 4.dp,
-                    hoveredElevation = 6.dp,
-                    focusedElevation = 6.dp),
-                shape = RoundedCornerShape(4.dp),
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = stringResource(id = R.string.backup_import))
+                Button(
+                    onClick = { viewModel.obtainEvent(BackupScreenEvent.ImportCustomerEvent) },
+                    modifier = Modifier.size(width = 120.dp, height = 48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Ocean300,
+                        contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 4.dp,
+                        pressedElevation = 6.dp,
+                        disabledElevation = 4.dp,
+                        hoveredElevation = 6.dp,
+                        focusedElevation = 6.dp),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(text = stringResource(id = R.string.restore_customer))
+                }
+
+                Button(
+                    onClick = { viewModel.obtainEvent(BackupScreenEvent.ImportRecordEvent) },
+                    modifier = Modifier.size(width = 120.dp, height = 48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Ocean300,
+                        contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 4.dp,
+                        pressedElevation = 6.dp,
+                        disabledElevation = 4.dp,
+                        hoveredElevation = 6.dp,
+                        focusedElevation = 6.dp),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(text = stringResource(id = R.string.restore_record))
+                }
+
+                Button(
+                    onClick = { viewModel.obtainEvent(BackupScreenEvent.ImportReturnVisitEvent) },
+                    modifier = Modifier.size(width = 120.dp, height = 48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Ocean300,
+                        contentColor = Color.White),
+                    elevation = ButtonDefaults.elevation(
+                        defaultElevation = 4.dp,
+                        pressedElevation = 6.dp,
+                        disabledElevation = 4.dp,
+                        hoveredElevation = 6.dp,
+                        focusedElevation = 6.dp),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(text = stringResource(id = R.string.restore_return_visit))
+                }
             }
         }
     }

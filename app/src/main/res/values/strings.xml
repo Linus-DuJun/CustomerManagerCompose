@@ -15,5 +15,11 @@
     <string name="backup_title">数据备份</string>
     <string name="backup_export">导出备份</string>
     <string name="backup_import">导入恢复</string>
+    <string name="backup_customer">备份客户</string>
+    <string name="backup_record">备份诊疗记录</string>
+    <string name="backup_return_visit">备份回访记录</string>
+    <string name="restore_customer">导入客户</string>
+    <string name="restore_record">导入诊疗记录</string>
+    <string name="restore_return_visit">导入回访记录</string>
     <string name="string_empty">这里什么都还没有哦</string>
 </resources>

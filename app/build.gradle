@@ -12,7 +12,8 @@ android {
     defaultConfig {
         applicationId "org.linus.du"
         minSdk 26
-        targetSdk 33
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk 29
         versionCode 1
         versionName "1.0"
 
