@@ -165,6 +165,10 @@ class AddCustomerViewModel @Inject constructor(
             obtainEvent(AddCustomerScreenEvent.NoPhoneErrorEvent)
             return
         }
+        if (_screenState.value.birthDay == 0L) {
+            toaster.showToast("请选择客户生日日期")
+            return
+        }
         if (_screenState.value.level.isEmpty()) {
             toaster.showToast("请选择客户等级")
             obtainEvent(AddCustomerScreenEvent.NoLevelErrorEvent)
