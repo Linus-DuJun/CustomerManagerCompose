@@ -10,14 +10,18 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.linus.core.data.db.entities.Customer
 import org.linus.core.data.db.entities.Subject
+import org.linus.core.utils.toast.Toaster
 import org.linus.du.feature.customer.domain.repository.CustomerRepository
 import org.linus.du.feature.customer.domain.repository.RecordRepository
+import org.linus.du.feature.customer.domain.repository.ReturnVisitRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class CustomerInfoViewModel @Inject constructor(
     private val customerRepository: CustomerRepository,
     private val recordRepository: RecordRepository,
+    private val returnVisitRepository: ReturnVisitRepository,
+    private val toaster: Toaster
 ) : ViewModel() {
 
     private val _customer = MutableStateFlow<Customer?>(null)
@@ -35,6 +39,15 @@ class CustomerInfoViewModel @Inject constructor(
             recordRepository.getRecordByCustomer(id).collectLatest {
                 _records.value = it
             }
+        }
+    }
+
+    fun deleteCustomer(customer: Customer) {
+        viewModelScope.launch(Dispatchers.IO) {
+            recordRepository.deleteRecordByCustomerId(customer.id)
+            returnVisitRepository.deleteReturnVisitsByCustomer(customer.id)
+            customerRepository.deleteCustomer(customer = customer)
+            toaster.showToast("删除成功")
         }
     }
 }

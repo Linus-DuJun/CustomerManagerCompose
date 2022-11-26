@@ -20,6 +20,10 @@ class RecordRepositoryImpl @Inject constructor(
         subjectDao.insert(record)
     }
 
+    override suspend fun deleteRecordByCustomerId(id: String) {
+        subjectDao.deleteSubjectByCustomerId(id)
+    }
+
     override suspend fun getRecordByCustomer(phone: String): Flow<List<Subject>> =
         subjectDao.getSubjectsByUser(phone)
 }

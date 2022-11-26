@@ -12,6 +12,7 @@ interface CustomerRepository {
     suspend fun updateCustomerLevel(phone: String, level: Int)
     suspend fun getCustomer(id: String): Flow<Customer>
     suspend fun getCustomerByName(name: String): Flow<List<Customer>>
+    suspend fun deleteCustomer(customer: Customer)
     fun getSuperCustomers(): PagingSource<Int, Customer>
     fun getNormalCustomers(): PagingSource<Int, Customer>
     fun getBadCustomers(): PagingSource<Int, Customer>

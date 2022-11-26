@@ -9,4 +9,5 @@ interface ReturnVisitRepository {
     suspend fun addReturnVisitItems(items: List<ReturnVisitEntity>)
     suspend fun getReturnVisitItems(): Flow<List<ReturnVisitEntity>>
     suspend fun deleteReturnVisit(rv: ReturnVisitEntity)
+    suspend fun deleteReturnVisitsByCustomer(id: String)
 }

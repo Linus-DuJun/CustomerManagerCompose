@@ -3,10 +3,9 @@ package org.linus.du.feature.customer.ui.custom_info
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -29,7 +28,18 @@ fun CustomerInfoScreen(
     Scaffold(
         topBar = { BaseTopAppBar(
             title = "${customer.value?.name} ${getLevelString(customer.value?.type)} ${customer.value?.id}",
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            actions = {
+                IconButton(onClick = {
+                    viewModel.deleteCustomer(customer.value!!)
+                    onBackClick.invoke()
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null
+                    )
+                }
+            }
         ) }
     ) {
         Column {
@@ -100,7 +110,9 @@ private fun RecordItemView(index: Int, record: Subject) {
         Text("${index + 1}", style = MaterialTheme.typography.body1)
         Spacer(modifier = Modifier.width(16.dp))
         Column(
-            modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 56.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
         ) {

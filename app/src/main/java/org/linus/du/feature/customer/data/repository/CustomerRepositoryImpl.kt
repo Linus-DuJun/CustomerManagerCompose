@@ -39,6 +39,10 @@ class CustomerRepositoryImpl @Inject constructor(
         return customerDao.getCustomerByName(name)
     }
 
+    override suspend fun deleteCustomer(customer: Customer) {
+        customerDao.delete(customer = customer)
+    }
+
     override fun getSuperCustomers(): PagingSource<Int, Customer> =
         customerDao.getSuperCustomers()
 

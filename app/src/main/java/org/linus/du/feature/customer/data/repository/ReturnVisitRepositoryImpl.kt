@@ -25,4 +25,8 @@ class ReturnVisitRepositoryImpl @Inject constructor(
     override suspend fun deleteReturnVisit(rv: ReturnVisitEntity) {
         dao.delete(rv)
     }
+
+    override suspend fun deleteReturnVisitsByCustomer(id: String) {
+        dao.deleteReturnVisitByCustomer(id)
+    }
 }

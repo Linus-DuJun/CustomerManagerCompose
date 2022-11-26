@@ -8,5 +8,6 @@ interface RecordRepository {
     suspend fun getRecordCount(): Int
     suspend fun getRecordsByOffset(offset: Int): List<Subject>
     suspend fun addRecord(record: Subject)
+    suspend fun deleteRecordByCustomerId(id: String)
     suspend fun getRecordByCustomer(phone: String): Flow<List<Subject>>
 }

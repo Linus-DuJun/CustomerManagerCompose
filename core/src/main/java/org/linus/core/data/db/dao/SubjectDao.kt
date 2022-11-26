@@ -19,6 +19,9 @@ abstract class SubjectDao : BaseDao<Subject>() {
     @Query("SELECT * FROM subject WHERE customer_phone = :phone ORDER BY time ASC LIMIT 500")
     abstract fun getSubjectsByUser(phone: String): Flow<List<Subject>>
 
+    @Query("DELETE FROM subject WHERE customer_phone = :phone")
+    abstract fun deleteSubjectByCustomerId(phone: String)
+
     @Delete
     abstract fun delete(record: Subject)
 }

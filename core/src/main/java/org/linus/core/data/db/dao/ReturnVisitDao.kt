@@ -19,6 +19,9 @@ abstract class ReturnVisitDao: BaseDao<ReturnVisitEntity>() {
     @Query("SELECT * FROM return_visit LIMIT 200 OFFSET :offset")
     abstract fun getReturnVisitByOffset(offset: Int): List<ReturnVisitEntity>
 
+    @Query("DELETE FROM return_visit WHERE customer_phone = :id")
+    abstract fun deleteReturnVisitByCustomer(id: String)
+
     @Delete
     abstract fun delete(record: ReturnVisitEntity)
 }
