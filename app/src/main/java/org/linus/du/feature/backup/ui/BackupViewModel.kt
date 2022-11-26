@@ -137,7 +137,7 @@ class BackupViewModel @Inject constructor(
                 }
             }
             toaster.showToast("就诊表导入成功")
-            obtainEvent(BackupScreenEvent.ExportCustomerSuccess)
+            obtainEvent(BackupScreenEvent.ImportRecordSuccess)
         } else {
             toaster.showToast("未找到备份文件")
             obtainEvent(BackupScreenEvent.ImportRecordSuccess)
@@ -190,10 +190,10 @@ class BackupViewModel @Inject constructor(
                 }
             }
             toaster.showToast("就诊表导入成功")
-            obtainEvent(BackupScreenEvent.ExportCustomerSuccess)
+            obtainEvent(BackupScreenEvent.ImportReturnVisitSuccess)
         } else {
             toaster.showToast("未找到备份文件")
-            obtainEvent(BackupScreenEvent.ImportRecordSuccess)
+            obtainEvent(BackupScreenEvent.ImportReturnVisitSuccess)
         }
     }
 
